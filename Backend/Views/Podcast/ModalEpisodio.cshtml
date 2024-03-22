@@ -1,0 +1,176 @@
+﻿@model BackendPortal.Models.VM.EpisodioPodcastVM
+
+@{
+    string identif = "Modal";
+    string rutaImg = @System.Configuration.ConfigurationManager.AppSettings["DIR_REPOSITORIO_URL"] + @"Podcasts\" + Model.Episodio.Picture;
+}
+
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="EpisodioForm" onsubmit="GuardarEpisodio(); return false;" enctype="multipart/form-data">
+            @Html.HiddenFor(model => model.Episodio.PodcastId)
+            @Html.HiddenFor(model => model.Modo)
+            @Html.HiddenFor(model => model.Episodio.Id)
+            @Html.HiddenFor(model => model.Episodio.AreasPracticas, new { id = "hAreasPracticas" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.Episodio.Autores, new { id = "hAutores" + identif, @class = "IncludeHidden" })
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Model.Modo de episodio</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            <div class="contenedorFoto">
+                                <label>Imagen</label>
+                                <center>
+                                    <div style="margin-top:10px;">
+                                        @if (!string.IsNullOrEmpty(Model.Episodio.Picture) && BackendPortal.Controllers.BaseController.ExisteUrl(rutaImg))
+                                        {
+                                            <img id="imgPicture" src="@{@rutaImg}" title="@{@Model.Episodio.PictureDescription}" class="imgFoto" style="max-width:300px; object-fit:cover;" />
+                                        }
+                                        else
+                                        {
+                                            <img id="imgPicture" src="~/Images/imgNoDisp.png" title="Imagen no disponible" class="imgFoto" style="max-width: 300px; object-fit: cover;" />
+                                        }
+                                    </div>
+                                </center>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.Episodio.Picture, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filenamePicture", name = "", @readonly = "readonly" } })
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-default btn-file btn-sm">
+                                                    Buscar…
+                                                    @Html.TextBoxFor(model => model.Episodio.PictureUpload, new { type = "file", id = "inputFilePicture", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFilePicture');readURL(this, 'imgPicture');" })
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div id="divFormatoFotoIncorrecto" class="hidden" style="margin-top:10px;">
+                                            <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Episodio.Picture)
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-sm btn-default" onclick="BorrarPicturePodcast();">Limpiar</button>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <label>Descripción</label>
+                                        @Html.EditorFor(model => model.Episodio.PictureDescription, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                        @Html.ValidationMessageFor(model => model.Episodio.PictureDescription)
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </div>
+                        <div class="col-md-4">
+
+                            <div style="margin-top:20px;">
+                                <label>Áreas de Práctica</label>
+                                <div id="pnlAreasPracticas@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Speakers</label>
+                                <div id="pnlAutores@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                                @*@Html.ValidationMessageFor(model => model.Podcast.Autores)*@
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Título (es) *</label>
+                            @Html.EditorFor(model => model.Episodio.Titulo_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Episodio.Titulo_es)
+                        </div>
+                        <div class="col-md-6">
+                            <label>Título (en) *</label>
+                            @Html.EditorFor(model => model.Episodio.Titulo_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Episodio.Titulo_en)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Numero Episodio *</label>
+                            @Html.EditorFor(model => model.Episodio.Numero, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Episodio.Numero)
+                        </div>
+                        <div class="col-md-4">
+                            <label>Duracion (minutos) *</label>
+                            @Html.EditorFor(model => model.Episodio.Duracion, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Episodio.Duracion)
+                        </div>
+                        <div class="col-md-4">
+                            <label>Fecha de Publicación *</label>
+                            <div class="input-group date">
+                                @Html.EditorFor(model => model.Episodio.Fecha, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                                <div class="input-group-addon input-sm dtp-sm">
+                                    <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Episodio.Fecha)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Link de Spotify</label>
+                            @Html.EditorFor(model => model.Episodio.SpotifyLink, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Episodio.ITunesLink)
+                        </div>
+                        <div class="col-md-6">
+                            <label>Link de iTunes</label>
+                            @Html.EditorFor(model => model.Episodio.ITunesLink, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Episodio.ITunesLink)
+                        </div>
+                        <div class="col-md-12 text-center" id="links" style="margin-top: 3% "></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button id="btn-guardar-episodio" type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div id="AlertsModal">
+</div>
+<div id="AlertsCombo">
+</div>
+@Scripts.Render("~/bundles/jqueryval")
+
+
+<script>
+
+    $(document).ready(function () {
+        InicializarDatePickers();
+
+
+        IniciarCombosEpisodios(JSON.parse('[' + $("#hAreasPracticas" + frmModal).val() + ']'),
+            JSON.parse('[' + $("#hAutores" + frmModal).val() + ']'));
+    })
+
+</script>
+
+

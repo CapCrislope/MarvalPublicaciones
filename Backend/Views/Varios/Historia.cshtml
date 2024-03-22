@@ -1,0 +1,40 @@
+﻿@model BackendPortal.Models.VM.TabVariosHistoriaVM
+<div class="panel-body">
+    <form id="HistoriaForm" onsubmit="GuardarHistoria(); return false;">
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="historia_es">Historia (es)</label>
+                    
+                    @Html.TextAreaFor(model => model.historiaDTO.historia_es, new { @id = "historia_es", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.historiaDTO.historia_es)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="historia_en">Historia (en)</label>
+                   @Html.TextAreaFor(model => model.historiaDTO.historia_en, new {  @id = "historia_en", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.historiaDTO.historia_en)
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:right;float:right;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+<div id="AlertsVarios">
+</div>
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("historia_es");
+        InicializarCKEDITOR("historia_en");
+    });
+</script>
+

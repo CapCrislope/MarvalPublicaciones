@@ -1,0 +1,80 @@
+﻿@model BackendPortal.Models.VM.EventoContenidoVM
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Contenido</h4>
+        </div>
+
+        <div class="modal-body">
+
+            <form id="formContenido">
+
+                @Html.HiddenFor(model => model.EventoContenido.IdOrigenContenido)
+                @Html.HiddenFor(model => model.EventoContenido.EdicionEvento_id)
+
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-8">
+                        <label>Url *</label>
+                        @Html.EditorFor(model => model.EventoContenido.Url, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "", name = "" } })
+                        @Html.ValidationMessageFor(model => model.EventoContenido.Url)
+                    </div>
+                    <div class="col-md-2">
+                        <label>Origen *</label>
+                        <select id="select-origenes" class="form-control input-sm">
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Parte *</label>
+                        @Html.EditorFor(model => model.EventoContenido.Parte, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "", name = "" } })
+                        @Html.ValidationMessageFor(model => model.EventoContenido.Parte)
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 2%">
+
+                    <div class="col-md-12 text-right">
+
+                        <button type="button" id="btn-guardar" class="btn btn-primary">Agregar</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="cargarLinks" style="margin-top: 3%">
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+    <div id="loading-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(245, 245, 245, 0.5); z-index: 9999; ">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+            <i style="font-size: 2em" class='glyphicon glyphicon-repeat fa-spin'></i>
+        </div>
+    </div>
+</div>
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/datepicker")
+
+@Styles.Render("~/Content/datepicker")
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+@Scripts.Render("~/Scripts/combos.js")
+
+<script>
+
+    $(document).ready(function () {
+        ;
+        ObtenerOrigenes();
+        CargarLinks();
+        $("#btn-guardar").off().on("click", function () {
+            ;
+            GuardarContenido();
+        })
+    })
+
+</script>

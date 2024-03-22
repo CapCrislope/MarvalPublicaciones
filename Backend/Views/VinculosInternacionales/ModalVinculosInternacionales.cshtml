@@ -1,0 +1,142 @@
+﻿@model BackendPortal.Models.VM.VinculosInternacionalesModalVM
+@Styles.Render("~/Content/Selectize")
+<div class="modal-dialog modal-xlg">
+    <div class="modal-content">
+        <form id="VinculosInternacionalesForm" onsubmit="GuardarVinculosInternacionales(); return false;">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tituloModal">@Model.titulo</h4>
+            </div>
+            <div class="modal-body">
+                @Html.HiddenFor(model => model.modo)
+                @Html.HiddenFor(model => model.vinculosInternacionales.id)
+
+                @Html.HiddenFor(model => model.vinculosInternacionales.TipoVinculo, new { id = "hTiposVinculos" } )
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="Title_esVinculosInternacionales">Título (es)*</label>
+                            @Html.EditorFor(model => model.vinculosInternacionales.title_es, new { htmlAttributes = new { id = "titulo_es", @class = "form-control input-sm ta-coment" } })
+                            @Html.ValidationMessageFor(model => model.vinculosInternacionales.title_es)
+                        </div>
+                        <div class="col-md-4">
+                            <label>Tipo</label>
+                            <div id="pnlTiposVinculos">
+                                <img src="~/Images/loading.gif" />
+                            </div>
+                            @Html.ValidationMessageFor(model => model.vinculosInternacionales.TipoVinculo)
+                        </div>
+                        <div class="col-md-2">
+                            <label>Orden</label>
+                            @Html.EditorFor(model => model.vinculosInternacionales.view_order,new { htmlAttributes = new { @class = "form-control input-sm", style = "max-width: 100px" } })
+                            @Html.ValidationMessageFor(model => model.vinculosInternacionales.view_order)
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="Description_esFechaVinculosInternacionales">Descripción (es)</label>
+                            @Html.TextAreaFor(model => model.vinculosInternacionales.description_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                            @Html.ValidationMessageFor(model => model.vinculosInternacionales.description_es)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="Title_enVinculosInternacionales">Título (en)*</label>
+                            @Html.EditorFor(model => model.vinculosInternacionales.title_en, new { htmlAttributes = new { id = "titulo_en", @class = "form-control input-sm ta-coment" } })
+                            @Html.ValidationMessageFor(model => model.vinculosInternacionales.title_en)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="Description_enVinculosInternacionales">Descripción (en)</label>
+                            @Html.TextAreaFor(model => model.vinculosInternacionales.description_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                            @Html.ValidationMessageFor(model => model.vinculosInternacionales.description_en)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="BuscarVinculosInternacionales">Imagen</label>
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.vinculosInternacionales.image, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filename", name = "", @readonly = "readonly" } })
+                                <span class="input-group-btn">
+                                    <span class="btn btn-default btn-file btn-sm">
+                                        Buscar…
+                                        @Html.TextBoxFor(model => model.vinculosInternacionales.ImagenUpload, new { type = "file", id = "inputFileVinculosInternacionales", accept = "image/*", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFileVinculosInternacionales');readURL(this, 'idImageVinculosInternacionales');" })
+                                    </span>
+                                </span>
+                            </div>
+                            <div id="divFormatoFotoIncorrecto" class="hidden" style="margin-top:10px;">
+                                <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 LimpiarVinculosInternacionalesContenedor">
+                            <div class="input-group input-group-btn">
+                                <button type="button" class="btn btn-default LimpiarVinculosInternacionales btn-sm" id="idLimpiarVinculosInternacionales">Limpiar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @{
+                                var href = System.Configuration.ConfigurationManager.AppSettings["DIR_VINCULOS_INTERNACIONALES_URL"].ToString() + Model.vinculosInternacionales.image;
+                            }
+                            @if (!BackendPortal.Controllers.BaseController.ExisteUrl(href) || Model.vinculosInternacionales.image == null)
+                            {
+                                <img id="idImageVinculosInternacionales" src="/Images/imgNoDisp.png" class="imageVinculosInternacionales" />
+                            }
+                            else
+                            {
+                                <img id="idImageVinculosInternacionales" src="@href" class="imageVinculosInternacionales" />
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">@Model.boton</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="AlertsModal">
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/Selectize")
+@Scripts.Render("~/bundles/combos")
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("vinculosInternacionales_description_es");
+        InicializarCKEDITOR("vinculosInternacionales_description_en");
+
+        loadTiposVinculos();
+
+        $(".LimpiarVinculosInternacionales").off().click(function () {
+            $("#filename").val("");
+            $("#idImageVinculosInternacionales").attr("src", "/Images/imgNoDisp.png");
+        });
+    });
+</script>

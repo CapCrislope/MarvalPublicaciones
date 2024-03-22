@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Usuarios";
+}
+
+<div id="AlertsUsuarios">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-10 izq">
+                <h2>@ViewBag.Title</h2>
+            </div>
+            <div class="col-md-2 der">
+                <button type="button" class="btn btn-primary" id="btnAltaUsuarios" onclick="AltaUsuarios();">Nuevo Usuario</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="pnlGrillaUsuarios">
+
+                <table id="TablaUsuarios" class="display compact">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Email</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Usuario</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hidUsuario" />
+
+@Scripts.Render("~/bundles/Usuarios")
+@Scripts.Render("~/bundles/jqueryval")

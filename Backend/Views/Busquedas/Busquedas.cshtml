@@ -1,0 +1,82 @@
+﻿
+@{
+    string identif = "Busquedas";
+    ViewBag.Title = identif;
+}
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-10 izq">
+                <h2>@ViewBag.Title</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div>
+                    <button type="button" class="btn btn-default btn-sm desplegableFiltros">
+                        Búsqueda&nbsp;<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                    </button>
+
+                    <div id="pnlContainerBusqueda" class="panel panel-default" style="margin-top:20px; margin-bottom:0px; display:none;">
+                        <div class="row">
+                            <div class="col-md-8 col-md-offset-2">
+                                <div id="pnlBusqueda" class="panel-body">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12 col-sm-12" id="pnlGrilla@(identif)">
+
+                <table id="Tabla@(identif)" class="display compact">
+                    <thead>
+                        <tr>
+                            <th>Fecha De Busqueda</th>
+                            <th>Email</th>
+                            <th>País Orígen</th>
+                            <th>Ip</th>
+                            <th>Texto</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Alerts@(identif)">
+
+</div>
+
+@Scripts.Render("~/bundles/Busquedas")
+@Scripts.Render("~/bundles/jqueryval")
+
+@Scripts.Render("~/bundles/DataTables")
+
+@Scripts.Render("~/Scripts/DataTables/dataTables.buttons.min.js")
+
+@Styles.Render("~/Content/DataTables/css/styles")
+@Styles.Render("~/Content/DataTables/css/buttons.dataTables.min.css")
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        IniciarPnlBusquedaBusquedas();
+        IniciarTablaBusquedas();
+
+        $(".desplegableFiltros").on('click',function(){
+            $("#pnlContainerBusqueda").slideToggle();
+        });
+
+    });
+</script>
+
+

@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Vínculos Internacionales";
+}
+
+<div id="AlertsVinculosInternacionales">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-10 izq">
+                <h2>@ViewBag.Title</h2>
+            </div>
+            <div class="col-md-2 der">
+                <button type="button" class="btn btn-primary" id="btnAltaVinculo" onclick="AltaVinculo();">Nuevo Vínculo</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="pnlGrillaVinculo">
+
+                <table id="TablaVinculosInternacionales" class="display compact">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Tipo</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="hId" />
+
+@Scripts.Render("~/bundles/VinculosInternacionales")
+@Scripts.Render("~/bundles/jqueryval")

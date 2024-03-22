@@ -1,0 +1,126 @@
+﻿@model BackendPortal.Models.VM.EventoAgendaVM
+
+<div id="AlertsModal">
+</div>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Cargar agenda</h4>
+        </div>
+        <div class="modal-body">
+            <form id="AgendaForm" onsubmit="return false;">
+                @Html.HiddenFor(model => model.EventoAgenda.Idioma)
+                @Html.HiddenFor(model => model.EventoAgenda.IdEdicionEvento)
+                @Html.HiddenFor(model => model.EventoAgenda.Id)
+                @Html.HiddenFor(model => model.Modo)
+                <div class="row">
+                    <div class="col-md-5">
+                        <div>
+                            <label>Fecha *</label>
+                            <div class="input-group date">
+                                @Html.EditorFor(model => model.EventoAgenda.Fecha, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                                <div class="input-group-addon input-sm dtp-sm">
+                                    <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.EventoAgenda.Fecha)
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Hora *</label>
+                        <div>
+                            @Html.EditorFor(model => model.EventoAgenda.Hora, new { htmlAttributes = new { @class = "form-control input-sm", @type = "time" } })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.EventoAgenda.Hora)
+                    </div>
+                    <div class="col-md-5">
+                        <div>
+                            <label>Idioma</label>
+                            <select id="idiomas" class="form-control input-sm">
+                                <option value=""></option>
+                                @foreach (var idioma in ViewBag.Idiomas)
+                                {
+                                    <option value="@(idioma == "Español" ? "es" : "en")">@idioma</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;">
+                    <div class="col-md-12">
+                        <label>Titulo (es)</label>
+                        @Html.EditorFor(model => model.EventoAgenda.TituloEs, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                        @Html.ValidationMessageFor(model => model.EventoAgenda.TituloEs)
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-12">
+                        <label>Contenido (es)</label>
+                        @Html.TextAreaFor(model => model.EventoAgenda.ContenidoEs, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        @Html.ValidationMessageFor(model => model.EventoAgenda.ContenidoEs)
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-12">
+                        <label>Titulo (en)</label>
+                        @Html.EditorFor(model => model.EventoAgenda.TituloEn, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                        @Html.ValidationMessageFor(model => model.EventoAgenda.TituloEn)
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-12">
+                        <label>Contenido (en)</label>
+                        @Html.TextAreaFor(model => model.EventoAgenda.ContenidoEn, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        @Html.ValidationMessageFor(model => model.EventoAgenda.ContenidoEn)
+                    </div>
+                </div>
+                <div class="row" style="margin-top:10px;">
+
+                    <div class="col-md-12" style="text-align: end;">
+                        <button class="btn btn-default" type="button" onclick="VaciarForm()">Cancelar</button>
+                        <button class="btn btn-primary" id="btnEnviar" type="submit" onclick="GuardarAgenda()" data-loading-text="<i class='glyphicon glyphicon-repeat fa-spin'></i> Guardando">Agregar</button>
+                    </div>
+                </div>
+            </form>
+
+                <div id="cargarAgenda" style="margin-top: 3%">
+
+                </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/datepicker")
+
+@Styles.Render("~/Content/datepicker")
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+@Scripts.Render("~/Scripts/combos.js")
+
+
+<script>
+
+    $(document).ready(function () {
+        InicializarDatePickers();
+
+        InicializarCKEDITOR("EventoAgenda_ContenidoEn");
+        InicializarCKEDITOR("EventoAgenda_ContenidoEs");
+
+        CargarAgenda();
+
+    });
+
+</script>
+

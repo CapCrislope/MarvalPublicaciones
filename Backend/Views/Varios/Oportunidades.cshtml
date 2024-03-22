@@ -1,0 +1,76 @@
+﻿@model BackendPortal.Models.VM.TabVariosOportunidadesVM
+<div class="panel-body">
+    <form id="OportunidadesForm" onsubmit="GuardarTabOportunidades(); return false;">
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="jovenes_es">Programa para jóvenes profesionales (es)</label>
+                    @Html.TextAreaFor(model => model.oportunidadesDTO.jovenes_es, new { @id = "jovenes_es", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.oportunidadesDTO.jovenes_es)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="jovenes_en">Programa para jóvenes profesionales (en)</label>
+                    @Html.TextAreaFor(model => model.oportunidadesDTO.jovenes_en, new { @id = "jovenes_en", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.oportunidadesDTO.jovenes_en)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="panel_oportunidades_es">Trabajar en Marval (es)</label>
+                    @Html.TextAreaFor(model => model.oportunidadesDTO.panel_oportunidades_es, new { @id = "panel_oportunidades_es", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px", @maxlength = 250 })
+                    @Html.ValidationMessageFor(model => model.oportunidadesDTO.panel_oportunidades_es)
+                    <div id="validOportunidadesES" class="hidden" style="margin-top:10px;">
+                        <span class="field-validation-error">El campo Trabajar en Marval (es) debe tener un máximo de 255 caracteres.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="panel_oportunidades_en">Trabajar en Marval (en)</label>
+                    @Html.TextAreaFor(model => model.oportunidadesDTO.panel_oportunidades_en, new { @id = "panel_oportunidades_en", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px", @maxlength = 250 })
+                    @Html.ValidationMessageFor(model => model.oportunidadesDTO.panel_oportunidades_en)
+                    <div id="validOportunidadesEN" class="hidden" style="margin-top:10px;">
+                        <span class="field-validation-error">El campo Trabajar en Marval (en) debe tener un máximo de 255 caracteres.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="panel_oportunidades_en">Código de Video de YouTube</label>
+                    @Html.EditorFor(model => model.oportunidadesDTO.video, new { htmlAttributes = new { id = "video", @class = "form-control input-sm ta-coment" } })
+                    @Html.ValidationMessageFor(model => model.oportunidadesDTO.video)
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:right;float:right;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("jovenes_es");
+        InicializarCKEDITOR("jovenes_en");
+        InicializarCKEDITOR("panel_oportunidades_es");
+        InicializarCKEDITOR("panel_oportunidades_en");
+    });
+</script>
+

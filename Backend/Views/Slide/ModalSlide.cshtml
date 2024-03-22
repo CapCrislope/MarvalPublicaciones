@@ -1,0 +1,150 @@
+﻿@model BackendPortal.Models.VM.SlideVM
+
+@{
+    string identif = "Modal";
+    string rutaImg = @System.Configuration.ConfigurationManager.AppSettings["DIR_REPOSITORIO_URL"] + @"Slides\" + Model.slide.image;
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="SlideForm" onsubmit="GuardarSlide(); return false;" enctype="multipart/form-data">
+            @Html.HiddenFor(model => model.modo)
+            @Html.HiddenFor(model => model.titulo)
+            @Html.HiddenFor(model => model.slide.id)
+            @Html.HiddenFor(model => model.slide.section_name, new { id = "hsection_name" + identif, @class = "IncludeHidden" })
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Model.titulo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="contenedorFoto">
+                                <label>Im&aacute;gen</label>
+                                <center>
+                                    <div style="margin-top:10px;">
+                                        @if (!string.IsNullOrEmpty(Model.slide.image) && BackendPortal.Controllers.BaseController.ExisteUrl(rutaImg))
+                                        {
+                                            <img id="imgPicture" src="@{@rutaImg}" class="imgFoto" />
+                                        }
+                                        else
+                                        {
+                                            <img id="imgPicture" src="~/Images/imgNoDisp.png" class="imgFoto" />
+                                        }
+                                    </div>
+                                </center>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.slide.image, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filenameImagen", name = "", @readonly = "readonly" } })
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-default btn-file btn-sm">
+                                                    Buscar…
+                                                    @Html.TextBoxFor(model => model.slide.imageUpload, new { type = "file", id = "inputFileImagen", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFileImagen');readURL(this, 'imgPicture');" })
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div id="divFormatoFotoIncorrecto" class="hidden" style="margin-top:10px;">
+                                            <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-sm btn-default" onclick="BorrarImagenSlide();">Limpiar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Orden *</label>
+                                    @Html.EditorFor(model => model.slide.Orden, new { htmlAttributes = new { @class = "form-control input-sm" } })        
+                                </div>
+                                <div class="col-md-6">
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.slide.Orden)
+                            <div style="margin-top:20px;">
+                                <label>Sección *</label>
+                                <div id="pnlsection_name@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                                @Html.ValidationMessageFor(model => model.slide.section_name)
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <div class="col-md-8">
+                                    <label>Color del panel (en hexa)</label>
+                                    @Html.EditorFor(model => model.slide.panel_color, new { htmlAttributes = new { @class = "form-control input-sm", onchange= "SetColorByHidden();" } })
+                                </div>
+                                <div class="col-md-4" style="margin-top:23px;">
+                                    <input type="color" id="inputColor" value="#ff0000" onchange="SetColorByInput();" />
+                                </div>
+                            </div>
+                            <div>
+                                @Html.ValidationMessageFor(model => model.slide.panel_color)
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:25px;">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (es)</label>
+                            @Html.EditorFor(model => model.slide.title_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.slide.title_es)
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <label>Copete (es)</label>
+                        @Html.TextAreaFor(model => model.slide.header_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:25px;">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (en)</label>
+                            @Html.EditorFor(model => model.slide.title_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.slide.title_en)
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <label>Copete (en)</label>
+                        @Html.TextAreaFor(model => model.slide.header_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:25px;">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Link</label>
+                            @Html.EditorFor(model => model.slide.link, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.slide.link)
+                        </div>
+                        <div class="col-md-8"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="submit" id="btnGuardarSlide" class="btn btn-primary" data-loading-text="<i class='glyphicon glyphicon-repeat fa-spin'></i> Guardando">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="AlertsModal">
+</div>
+<div id="AlertsCombo">
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("slide_header_en");
+        InicializarCKEDITOR("slide_header_es");
+    })
+</script>

@@ -1,0 +1,25 @@
+﻿<div id="AlertsModal">
+</div>
+<div class="modal-dialog modal-xlg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="TituloModal"></h4>
+        </div>
+        <div id="tabCV">
+            <ul class="nav nav-tabs" style="margin:5px">
+                <li class="obligatorio"><a href="#" onclick="javascript: CargarFormularioCV('Datos');" data-toggle="tab" id="lnkDatos">Datos</a></li>
+                <li><a href="#" onclick="javascript: CargarFormularioCV('Experiencia');" data-toggle="tab" id="lnkAreas">Experiencia</a></li>
+                <li><a href="#" onclick="javascript: CargarFormularioCV('Educacion');" data-toggle="tab" id="lnkProfesionales">Educación</a></li>
+                <li><a href="#" onclick="javascript: CargarFormularioCV('Entrevistas');" data-toggle="tab" id="lnkAsistencias">Entrevistas</a></li>
+            </ul>
+        </div>
+        <div class="modal-body" id="pnlDialogCVBaseBody">
+            <div><img src="/Images/loading.gif" /></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hidCVBase" />

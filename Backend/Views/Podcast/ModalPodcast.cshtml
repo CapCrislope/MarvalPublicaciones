@@ -1,0 +1,169 @@
+﻿@model BackendPortal.Models.VM.PodcastVM
+
+@{
+    string identif = "Modal";
+    string rutaImg = @System.Configuration.ConfigurationManager.AppSettings["DIR_REPOSITORIO_URL"] + @"Podcasts\" + Model.Podcast.Picture;
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="PodcastForm" onsubmit="GuardarPodcast(); return false;" enctype="multipart/form-data">
+
+            
+            @Html.HiddenFor(model => model.Modo, new { id = "hModo" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.Podcast.Id, new { id = "hId" + identif, @class = "IncludeHidden" })
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Model.Titulo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="contenedorFoto">
+                                <label>Imagen</label>
+                                <center>
+                                    <div style="margin-top:10px;">
+                                        @if (!string.IsNullOrEmpty(Model.Podcast.Picture) && BackendPortal.Controllers.BaseController.ExisteUrl(rutaImg))
+                                        {
+                                            <img id="imgPicture" src="@{@rutaImg}" title="@{@Model.Podcast.PictureDescription}" class="imgFoto" style="max-width: 300px; object-fit: cover;" />
+                                        }
+                                        else
+                                        {
+                                            <img id="imgPicture" src="~/Images/imgNoDisp.png" title="Imagen no disponible" class="imgFoto" style="max-width: 300px; object-fit: cover;" />
+                                        }
+                                    </div>
+                                </center>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.Podcast.Picture, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filenamePicture", name = "", @readonly = "readonly" } })
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-default btn-file btn-sm">
+                                                    Buscar…
+                                                    @Html.TextBoxFor(model => model.Podcast.PictureUpload, new { type = "file", id = "inputFilePicture", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFilePicture');readURL(this, 'imgPicture');" })
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div id="divFormatoFotoIncorrecto" class="hidden" style="margin-top:10px;">
+                                            <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Podcast.Picture)
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-sm btn-default" onclick="BorrarPicturePodcast();">Limpiar</button>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <label>Descripción</label>
+                                        @Html.EditorFor(model => model.Podcast.PictureDescription, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                        @Html.ValidationMessageFor(model => model.Podcast.PictureDescription)
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col-md-4">
+
+                            <div style="margin-top:20px;">
+                                <label>Áreas de Práctica</label>
+                                <div id="pnlAreasPracticas@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Autores</label>
+                                <div id="pnlAutores@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Podcast.Autores)
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>*@
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:25px;">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (es) *</label>
+                            @Html.EditorFor(model => model.Podcast.Titulo_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Podcast.Titulo_es)
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4" style="margin-top:10px;">
+                            <label>Meta Título (es)</label>
+                            @Html.EditorFor(model => model.Podcast.MetaTitle_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Podcast.MetaTitle_en)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Meta Descripción (es)</label>
+                            @Html.TextAreaFor(model => model.Podcast.MetaDescription_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (en) *</label>
+                            @Html.EditorFor(model => model.Podcast.Titulo_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Podcast.Titulo_en)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4" style="margin-top:10px;">
+                            <label>Meta Título (en)</label>
+                            @Html.EditorFor(model => model.Podcast.MetaTitle_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.Podcast.MetaTitle_en)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Meta Descripción (en)</label>
+                            @Html.TextAreaFor(model => model.Podcast.MetaDescription_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary" id="btn-guardar">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="AlertsModal">
+</div>
+<div id="AlertsCombo">
+</div>
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+
+    $(document).ready(function () {
+        InicializarCKEDITOR("Podcast.MetaDescription_en");
+        InicializarCKEDITOR("Podcast.MetaDescription_es");
+        //InicializarCKEDITOR("podcast_meta_description_en");
+        //InicializarCKEDITOR("podcast_header_es");
+        //InicializarCKEDITOR("podcast_content_es");
+        //InicializarCKEDITOR("podcast_meta_description_es");
+        //InicializarDatePickers();
+        
+        //IniciarCombosHomePodcast(JSON.parse('[' + $("#hAreasPracticas" + frmModal).val() + ']'),
+        //    JSON.parse('[' + $("#hAutores" + frmModal).val() + ']'));
+    });
+</script>

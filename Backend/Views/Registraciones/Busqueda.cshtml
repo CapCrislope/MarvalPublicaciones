@@ -1,0 +1,56 @@
+﻿@model BackendPortal.Models.Q.QSuscripcion
+
+@{
+    string identif = "Registraciones";
+}
+
+<form id="frmBusquedaRegistraciones">
+    <div class="row" style="margin-top: 20px;">
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Fecha Alta Desde</label>
+                    <div class="input-group date">
+                        @Html.EditorFor(m => m.FechaDesde, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                        <div class="input-group-addon input-sm dtp-sm">
+                            <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="col-md-4">
+               <div class="form-group">
+                   <label>Fecha Alta Hasta</label>
+                   <div class="input-group date">
+                       @Html.EditorFor(m => m.FechaHasta, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                       <div class="input-group-addon input-sm dtp-sm">
+                           <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                       </div>
+                   </div>
+               </div>
+           </div>
+            <center>
+                <div class="col-md-2 centrarBtn">
+                    <button type="button" class="btn btn-default" onclick="LimpiarFormBusquedaRegistraciones();">Limpiar</button>
+                </div>
+            </center>
+
+            <div class="col-md-2 centrarBtn">
+                <button id="btnForm" type="button" class="btn btn-primary" onclick="BuscarRegistraciones(); return false;">Buscar</button>
+            </div>
+            
+        </div>
+    </div>
+</form>
+
+@Scripts.Render("~/bundles/datepicker")
+
+@Styles.Render("~/Content/datepicker")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        InicializarDatePickers();
+    })
+</script>
+
+

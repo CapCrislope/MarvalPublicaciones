@@ -1,0 +1,41 @@
+﻿@model BackendPortal.Models.VM.TabVariosAvisoLegalVM
+<div class="panel-body">
+    <form id="AvisoLegalForm" onsubmit="GuardarTabAvisoLegal(); return false;">
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="legal_es">Legal (es)</label>
+                    @Html.TextAreaFor(model => model.avisoLegalDTO.legal_es, new { @id = "legal_es", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.avisoLegalDTO.legal_es)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="legal_en">Legal (en)</label>
+                    @Html.TextAreaFor(model => model.avisoLegalDTO.legal_en, new { @id = "legal_en", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.avisoLegalDTO.legal_en)
+                    <div id="validAvisoLegal" class="hidden" style="margin-top:10px;">
+                        <span class="field-validation-error">El campo es obligatorio.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:right;float:right;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("legal_es");
+        InicializarCKEDITOR("legal_en");
+    });
+</script>
+

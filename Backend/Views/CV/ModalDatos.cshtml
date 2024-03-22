@@ -1,0 +1,110 @@
+﻿@model BackendPortal.Models.VM.CVDatosVM
+
+<form id="DatosForm">
+    @Html.HiddenFor(model => model.modo)
+    @Html.HiddenFor(model => model.datos.id)
+    <div class="modal-body">
+        <div class="form-group">
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-3">
+                    <label>Nombre *</label>
+                    @Html.EditorFor(model => model.datos.first_name, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.first_name)
+                </div>
+                <div class="col-md-3">
+                    <label>Apellido *</label>
+                    @Html.EditorFor(model => model.datos.last_name, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.last_name)
+                </div>
+                <div class="col-md-3">
+                    <label>Dni *</label>
+                    @Html.EditorFor(model => model.datos.dni, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.dni)
+                </div>
+                <div class="col-md-3">
+                    <label>Fecha Nacimiento *</label>
+                    <div class="input-group date">
+                        @Html.EditorFor(model => model.datos.birth_date, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                        <div class="input-group-addon input-sm dtp-sm">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(model => model.datos.birth_date)
+                </div>
+            </div>
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-3">
+                    <label>Teléfono *</label>
+                    @Html.EditorFor(model => model.datos.phone, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.phone)
+                </div>
+                <div class="col-md-3">
+                    <label>Pais *</label>
+                    @Html.EditorFor(model => model.datos.country, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.country)
+                </div>
+                <div class="col-md-3">
+                    <label>Código Postal *</label>
+                    @Html.EditorFor(model => model.datos.zip_code, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.zip_code)
+                </div>
+                <div class="col-md-3">
+                    <label>Email *</label>
+                    @Html.EditorFor(model => model.datos.email, new { htmlAttributes = new { type = "email", @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.email)
+                </div>
+            </div>
+            <div class="row" style="margin-top:20px;">
+                <div class="col-md-3">
+                    <label>LinkedIn</label>
+                    @Html.EditorFor(model => model.datos.linkedin, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.linkedin)
+                </div>
+                <div class="col-md-3">
+                    <label>Referencia</label>
+                    @Html.EditorFor(model => model.datos.reference, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                    @Html.ValidationMessageFor(model => model.datos.reference)
+                </div>
+                <div class="col-md-3">
+                    <label>Alta *</label>
+                    <div class="input-group date">
+                        @Html.EditorFor(model => model.datos.date, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                        <div class="input-group-addon input-sm dtp-sm">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div> 
+                    @Html.ValidationMessageFor(model => model.datos.date)        
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="der" style="margin-right:20px;">
+        <button id="btnGuardarModalDatos" type="submit" class="btn btn-primary">Guardar</button>
+        
+        @if (Model.modo == "EDICION")
+        {
+            <button type="button" style="margin-left:10px;" class="btn btn-default hidden" onclick="ExportarPDF(@{@Model.datos.id})">PDF</button>
+        }
+    </div>
+</form>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(document).ready(function () {
+        InicializarDatePickers();
+
+        $("#TituloModal").text("Datos");
+
+        if($("#modo").val() == 'ALTA')
+        {
+            $("#DatosForm").off("submit").on("submit", GuardarDatos);
+        }
+        else
+        {
+            $("#DatosForm").off("submit").on("submit", EditarDatos);
+        }
+    });
+</script>

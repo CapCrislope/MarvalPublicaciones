@@ -1,0 +1,150 @@
+﻿@model DistribucionUtilidades.Models.VM.CargaImpuestosRealesVM
+@{
+    string identif = "_CargaImpuestosReales";
+}
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        @{
+            if (ViewBag.TipoProceso == 1)
+            {
+                <h3>Carga de Impuestos Reales (Proceso Real)</h3>
+            }
+            else
+            {
+                <h3 style="color:#ff6a00">Carga de Impuestos Reales (Proceso Provisorio)</h3>
+            }
+        }
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="leyenda">
+            Para cargar los impuestos reales que han sido pagados en nombre de los socios y exsocios, por favor seleccione el mes e importe el documento de Excel con la información correspondiente.<br />
+            Luego, valide que la información se ha cargado correctamente y seleccione el botón “Guardar” para finalizar la carga.
+        </p>
+    </div>
+</div>
+
+
+<form id="ImpuestosRealesForm" onsubmit="guardarImpuestosReales(); return false">
+
+    @{if (ViewBag.NotaRevision != "" && ViewBag.NotaRevision != null)
+        {
+            <div class="row mt-3 mb-5">
+                <div class="form-group-sm col-md-12" style="color: #db2121; font-size: 16px;">
+                    <label>Nota de Revisión</label>
+                       <div>@ViewBag.NotaRevision</div>
+                </div>
+            </div>
+        }
+    }
+    <div class="row mt-3">
+        <div class="form-group-sm col-md-3">
+            @Html.HiddenFor(model => model.Mes, new { id = "hMes" + identif, @class = "IncludeHidden" })
+            <label for="ddMes@{@identif}">Mes</label>
+            <div id="pnlMes@{@identif}">
+                @*<img src="~/Images/loading.gif" />*@
+            </div>
+        </div>
+        <div class="col-md-4">
+            <label>Excel de impuestos desglosados</label>
+            <div class="custom-file">
+
+                <input type="file" class="custom-file-input" name="excelFile" id="excelFile" accept=".xls, .xlsx" lang="es">
+                <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
+            </div>
+        </div>
+        <div class="col-md-3" style="display: inline-flex;">
+            <div style="align-self: flex-end;padding-bottom: 2px;">
+                <button id="btnCargarExcel" type="button" class="btn btn-primary btn-sm" onclick="ValidarDatosExcelImpuestosReales()">Cargar</button>
+            </div>
+            <div style="align-self: flex-end;padding-left: 15px;padding-bottom: 5px;">
+                <a href="/Templates/ImpuestosReales.xlsx" target="_blank">Descargar Template</a>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div style="margin-top: 30px; text-align: end;">
+                <button id="btnCierreImpuestos" type="button" class="btn btn-primary btn-sm" data-toggle="confirmation" data-placement="left" data-singleton="true" data-on-confirm="" data-title="¿Está seguro?">Cierre de Impuestos</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <table id="ImpuestosRealesTable" class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th width="20%" scope="col">Socio/Ex-Socio</th>
+                        <th width="11%" scope="col">Bienes<br />Personales</th>
+                        <th width="11%" scope="col">Saldo DDJJ<br />Bienes<br />Personales</th>
+                        <th width="11%" scope="col">Impuestos<br />Ganancias</th>
+                        <th width="11%" scope="col">Saldo DDJJ<br />Ganancias</th>
+                        <th width="11%" scope="col">Impuesto<br />Cedular</th>
+                        <th width="11%" scope="col">Saldo DDJJ<br />Impuesto<br />Cedular</th>
+                        <th width="14%">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="text-align:center;">No hay registros cargados.</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="text-center">
+                <button type="submit" id="btnGuardarImpuestos" class="btn btn-primary btn-sm pl-3 pr-3 mt-5" disabled>
+                    Guardar
+                </button>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+
+    </div>
+</form>
+
+
+<partial name="_ValidationScriptsPartial" />
+<environment include="Development">
+    <script src="~/js/CargaImpuestosReales.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/CargaImpuestosReales.min.js" asp-append-version="true"></script>
+</environment>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        CargarComboMes();
+        InitializeConfirmationPop(CierreImpuestos);
+        $('#excelFile').on('change',
+            function (e) {
+                //get the file name
+                ;
+                var fileName = e.target.files[0].name;
+
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+
+
+    })
+
+</script>

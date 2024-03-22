@@ -1,0 +1,72 @@
+﻿@model DistribucionUtilidades.Models.VM.InformacionContableVM
+
+<div class="table-responsive">
+    <table id="ImpuestosAcumuladosTable" class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Socio</th>
+                <th scope="col">Departamento</th>
+                <th scope="col">Distribución <br/> Bruta</th>
+                <th scope="col">Gastos de Viajes</th>
+                <th scope="col">Retenciones</th>
+                <th scope="col">Distribución <br/> Neta</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            @if (Model.InformacionesContables.Count > 0)
+            {
+                foreach (var item in Model.InformacionesContables.Where(x => x.ExSocio == false))
+                {
+                    <tr>
+                        <td>@item.Socio</td>
+                        <td>@item.Departamento</td>
+                        <td>$ @item.DistribucionBruta.ToString("N0")</td>
+                        <td>$ @item.GastosDeViaje.ToString("N0")</td>
+                        <td>$ @item.Retenciones.ToString("N0")</td>
+                        <td>$ @item.DistribucionNeta.ToString("N0")</td>
+                    </tr>
+                }
+                <tr class="bg-total">
+                    <td>Total Socios</td>
+                    <td></td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == false).Sum(x => x.DistribucionBruta).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == false).Sum(x => x.GastosDeViaje).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == false).Sum(x => x.Retenciones).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == false).Sum(x => x.DistribucionNeta).ToString("N0")</td>
+                </tr>
+                foreach (var item in Model.InformacionesContables.Where(x => x.ExSocio == true))
+                {
+                    <tr>
+                        <td>@item.Socio</td>
+                        <td>@item.Departamento</td>
+                        <td>$ @item.DistribucionBruta.ToString("N0")</td>
+                        <td>$ @item.GastosDeViaje.ToString("N0")</td>
+                        <td>$ @item.Retenciones.ToString("N0")</td>
+                        <td>$ @item.DistribucionNeta.ToString("N0")</td>
+                    </tr>
+                }
+                <tr class="bg-total">
+                    <td>Total ExSocios</td>
+                    <td></td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == true).Sum(x => x.DistribucionBruta).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == true).Sum(x => x.GastosDeViaje).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == true).Sum(x => x.Retenciones).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Where(x => x.ExSocio == true).Sum(x => x.DistribucionNeta).ToString("N0")</td>
+                </tr>
+                <tr class="bg-total">
+                    <td>Total</td>
+                    <td></td>
+                    <td>$ @Model.InformacionesContables.Sum(x => x.DistribucionBruta).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Sum(x => x.GastosDeViaje).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Sum(x => x.Retenciones).ToString("N0")</td>
+                    <td>$ @Model.InformacionesContables.Sum(x => x.DistribucionNeta).ToString("N0")</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>
+

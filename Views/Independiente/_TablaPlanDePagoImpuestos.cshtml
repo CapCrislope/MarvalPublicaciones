@@ -1,0 +1,570 @@
+﻿@model DistribucionUtilidades.Models.VM.PlanPagosImpuestosVM
+
+
+@{
+    //RRHH
+    if (Model.Rol == 3)
+    {
+
+    }
+    // finanzas
+    else
+    {
+
+    }
+
+    //totales socios
+    long ImporteCG1Total_Socios = Model.Socios.Sum(item => item.Ganancias_C1);
+    long ImporteCG2Total_Socios = Model.Socios.Sum(item => item.Ganancias_C2);
+    long ImporteCG3Total_Socios = Model.Socios.Sum(item => item.Ganancias_C3);
+    long ImporteCG4Total_Socios = Model.Socios.Sum(item => item.Ganancias_C4);
+    long ImporteCG5Total_Socios = Model.Socios.Sum(item => item.Ganancias_C5);
+
+    long ImporteCB1Total_Socios = Model.Socios.Sum(item => item.Bienes_C1);
+    long ImporteCB2Total_Socios = Model.Socios.Sum(item => item.Bienes_C2);
+    long ImporteCB3Total_Socios = Model.Socios.Sum(item => item.Bienes_C3);
+    long ImporteCB4Total_Socios = Model.Socios.Sum(item => item.Bienes_C4);
+    long ImporteCB5Total_Socios = Model.Socios.Sum(item => item.Bienes_C5);
+
+    // totales exsocios
+
+    long ImporteCG1Total_ExSocios = Model.ExSocios.Sum(item => item.Ganancias_C1);
+    long ImporteCG2Total_ExSocios = Model.ExSocios.Sum(item => item.Ganancias_C2);
+    long ImporteCG3Total_ExSocios = Model.ExSocios.Sum(item => item.Ganancias_C3);
+    long ImporteCG4Total_ExSocios = Model.ExSocios.Sum(item => item.Ganancias_C4);
+    long ImporteCG5Total_ExSocios = Model.ExSocios.Sum(item => item.Ganancias_C5);
+
+    long ImporteCB1Total_ExSocios = Model.ExSocios.Sum(item => item.Bienes_C1);
+    long ImporteCB2Total_ExSocios = Model.ExSocios.Sum(item => item.Bienes_C2);
+    long ImporteCB3Total_ExSocios = Model.ExSocios.Sum(item => item.Bienes_C3);
+    long ImporteCB4Total_ExSocios = Model.ExSocios.Sum(item => item.Bienes_C4);
+    long ImporteCB5Total_ExSocios = Model.ExSocios.Sum(item => item.Bienes_C5);
+
+
+    long SumSubTotalesGanancias_Base_Socio = 0;
+    long SumSubTotalesBienes_Base_Socio = 0;
+
+    long SumSubTotalesGanancias_Base_ExSocio = 0;
+    long SumSubTotalesBienes_Base_ExSocio = 0;
+
+    long SumTotalesSocios = 0;
+    long SumTotalesExSocios = 0;
+
+    long SumTotales = 0;
+
+    if (ViewBag.Rol != 3)
+    {
+        SumSubTotalesGanancias_Base_Socio = Model.Socios.Sum(item => item.SubTotalGanancias);
+        SumSubTotalesBienes_Base_Socio = Model.Socios.Sum(item => item.SubTotalBienes);
+
+        SumSubTotalesGanancias_Base_ExSocio = Model.ExSocios.Sum(item => item.SubTotalGanancias);
+        SumSubTotalesBienes_Base_ExSocio = Model.ExSocios.Sum(item => item.SubTotalBienes);
+
+        SumTotalesSocios = SumSubTotalesGanancias_Base_Socio + SumSubTotalesBienes_Base_Socio;
+
+        SumTotalesExSocios = SumSubTotalesGanancias_Base_ExSocio + SumSubTotalesBienes_Base_ExSocio;
+
+        SumTotales = SumTotalesSocios + SumTotalesExSocios;
+    }
+
+
+}
+
+
+@{
+
+    long SubTotalGananciasSocio = 0;
+    long SubTotalBienesSocio = 0;
+    long AcuSubGananciasSocio = 0;
+    long AcuSubBienesSocio = 0;
+
+    long SubTotalGananciasExSocio = 0;
+    long SubTotalBienesExSocio = 0;
+    long AcuSubGananciasExSocio = 0;
+    long AcuSubBienesExSocio = 0;
+
+
+
+
+
+
+    if (Model.Socios.Count > 0)
+    {
+        for (int i = 0; i < Model.Socios.Count; i++)
+        {
+            SubTotalGananciasSocio = Model.Socios[i].Ganancias_C1 + Model.Socios[i].Ganancias_C2 + Model.Socios[i].Ganancias_C3 + Model.Socios[i].Ganancias_C4 + Model.Socios[i].Ganancias_C5;
+            SubTotalBienesSocio = Model.Socios[i].Bienes_C1 + Model.Socios[i].Bienes_C2 + Model.Socios[i].Bienes_C3 + Model.Socios[i].Bienes_C4 + Model.Socios[i].Bienes_C5;
+
+            <tr id="@Model.Socios[i].IdPersona" data-type="Socio" data-row="@i">
+                <td class="fixed-data">@Model.Socios[i].Socio</td>
+
+                <td>
+                    <div id="ImporteC1_Ganancias_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Ganancias_C1">
+                        $ @(Model.Socios[i].Ganancias_C1.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC2_Ganancias_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Ganancias_C2">
+                        $ @(Model.Socios[i].Ganancias_C2.ToString("N0"))
+                    </div>
+                </td>
+                <td>
+                    <div id="ImporteC3_Ganancias_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Ganancias_C3">
+                        $ @(Model.Socios[i].Ganancias_C3.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC4_Ganancias_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Ganancias_C4">
+
+                        $ @(Model.Socios[i].Ganancias_C4.ToString("N0"))
+
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC5_Ganancias_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Ganancias_C5">
+
+                        $ @(Model.Socios[i].Ganancias_C5.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SubTotalGanancias_@Model.Socios[i].IdPersona" data-val="@(ViewBag.Rol == 3 ? SubTotalGananciasSocio : Model.Socios[i].SubTotalGanancias)">
+
+                        $ @(ViewBag.Rol == 3 ? SubTotalGananciasSocio.ToString("N0") : Model.Socios[i].SubTotalGanancias.ToString("N0"))
+                    </div>
+                </td>
+
+
+                <td>
+                    <div id="ImporteC1_Bienes_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Bienes_C1">
+                        $ @(Model.Socios[i].Bienes_C1.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC2_Bienes_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Bienes_C2">
+                        $ @(Model.Socios[i].Bienes_C2.ToString("N0"))
+                    </div>
+                </td>
+                <td>
+                    <div id="ImporteC3_Bienes_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Bienes_C3">
+                        $ @(Model.Socios[i].Bienes_C3.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC4_Bienes_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Bienes_C4">
+
+                        $ @(Model.Socios[i].Bienes_C4.ToString("N0"))
+
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC5_Bienes_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Bienes_C5">
+
+                        $ @(Model.Socios[i].Bienes_C5.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SubTotalBienes_@Model.Socios[i].IdPersona" data-val="@(ViewBag.Rol == 3 ? SubTotalBienesSocio : Model.Socios[i].SubTotalBienes)">
+
+                        $ @(ViewBag.Rol == 3 ? SubTotalBienesSocio.ToString("N0") : Model.Socios[i].SubTotalBienes.ToString("N0"))
+                    </div>
+                </td>
+
+                @if (ViewBag.Rol == 3)
+                {
+                    AcuSubGananciasSocio = AcuSubGananciasSocio + SubTotalGananciasSocio;
+                    AcuSubBienesSocio = AcuSubBienesSocio + SubTotalBienesSocio;
+                }
+
+                <td>
+                    <div id="ImporteTotal_@Model.Socios[i].IdPersona" data-val="@(ViewBag.Rol == 3 ? (SubTotalGananciasSocio + SubTotalBienesSocio) : (SumSubTotalesGanancias_Base_Socio + SumSubTotalesBienes_Base_Socio))">
+
+                        $ @(ViewBag.Rol == 3 ? (SubTotalGananciasSocio + SubTotalBienesSocio).ToString("N0") : Model.Socios[i].Total.ToString("N0"))
+                    </div>
+                </td>
+
+
+            </tr>
+
+
+        }
+    }
+
+    //----------------------totalSocios
+    <tr id="totalSocios" class="bg-total">
+        <td class="fixed-data-total">Total Socios</td>
+
+        <td>
+            <div id="ImporteCG1_TotalGananciasSocios" data-val="@ImporteCG1Total_Socios">
+                $ @ImporteCG1Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCG2Total_Socios" data-val="@ImporteCG2Total_Socios">
+                $ @ImporteCG2Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCG3Total_Socios" data-val="@ImporteCG3Total_Socios">
+                $ @ImporteCG3Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCG4Total_Socios" data-val="@ImporteCG4Total_Socios">
+                $ @ImporteCG4Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCG5Total_Socios" data-val="@ImporteCG5Total_Socios">
+                $ @ImporteCG5Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="Importe_SumSubGanancias_Socios">
+                $ @(ViewBag.Rol == 3 ? AcuSubGananciasSocio.ToString("N0") : SumSubTotalesGanancias_Base_Socio.ToString("N0"))
+            </div>
+        </td>
+
+
+        <td>
+            <div id="ImporteCB1_TotalGananciasSocios">
+                $ @ImporteCB1Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCG2Total_Socios">
+                $ @ImporteCB2Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCB3Total_Socios">
+                $ @ImporteCB3Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCB4Total_Socios">
+                $ @ImporteCB4Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="ImporteCB5Total_Socios">
+                $ @ImporteCB5Total_Socios.ToString("N0")
+            </div>
+        </td>
+
+        <td>
+            <div id="Importe_SumSubBienes_Socios">
+                $ @(ViewBag.Rol == 3 ? AcuSubBienesSocio.ToString("N0") : SumSubTotalesBienes_Base_Socio.ToString("N0"))
+            </div>
+        </td>
+
+        <td>
+            <div id="Importe_Total">
+                $ @(ViewBag.Rol == 3 ? (AcuSubBienesSocio + AcuSubGananciasSocio).ToString("N0") : SumTotalesSocios.ToString("N0"))
+            </div>
+        </td>
+
+    </tr>
+    //--------------------------------------------------------------------------------
+    if (Model.ExSocios.Count > 0)
+    {
+
+        for (int i = 0; i < Model.ExSocios.Count; i++)
+        {
+            SubTotalGananciasExSocio = Model.ExSocios[i].Ganancias_C1 + Model.ExSocios[i].Ganancias_C2 + Model.ExSocios[i].Ganancias_C3 + Model.ExSocios[i].Ganancias_C4 + Model.ExSocios[i].Ganancias_C5;
+            SubTotalBienesExSocio = Model.ExSocios[i].Bienes_C1 + Model.ExSocios[i].Bienes_C2 + Model.ExSocios[i].Bienes_C3 + Model.ExSocios[i].Bienes_C4 + Model.ExSocios[i].Bienes_C5;
+
+            <tr id="@Model.ExSocios[i].IdPersona" data-type="Socio" data-row="@i">
+                <td class="fixed-data">@Model.ExSocios[i].Socio</td>
+
+                <td>
+                    <div id="ImporteC1_Ganancias_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Ganancias_C1">
+                        $ @(Model.ExSocios[i].Ganancias_C1.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC2_Ganancias_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Ganancias_C2">
+                        $ @(Model.ExSocios[i].Ganancias_C2.ToString("N0"))
+                    </div>
+                </td>
+                <td>
+                    <div id="ImporteC3_Ganancias_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Ganancias_C3">
+                        $ @(Model.ExSocios[i].Ganancias_C3.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC4_Ganancias_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Ganancias_C4">
+
+                        $ @(Model.ExSocios[i].Ganancias_C4.ToString("N0"))
+
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC5_Ganancias_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Ganancias_C5">
+
+                        $ @(Model.ExSocios[i].Ganancias_C5.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SubTotalGanancias_@Model.ExSocios[i].IdPersona" data-val="@(ViewBag.Rol == 3 ? SubTotalGananciasExSocio : Model.ExSocios[i].SubTotalGanancias)">
+
+                        $ @(ViewBag.Rol == 3 ? SubTotalGananciasExSocio.ToString("N0") : Model.ExSocios[i].SubTotalGanancias.ToString("N0"))
+                    </div>
+                </td>
+
+
+                <td>
+                    <div id="ImporteC1_Bienes_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Bienes_C1">
+                        $ @(Model.ExSocios[i].Bienes_C1.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC2_Bienes_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Bienes_C2">
+                        $ @(Model.ExSocios[i].Bienes_C2.ToString("N0"))
+                    </div>
+                </td>
+                <td>
+                    <div id="ImporteC3_Bienes_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Bienes_C3">
+                        $ @(Model.ExSocios[i].Bienes_C3.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC4_Bienes_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Bienes_C4">
+
+                        $ @(Model.ExSocios[i].Bienes_C4.ToString("N0"))
+
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteC5_Bienes_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Bienes_C5">
+
+                        $ @(Model.ExSocios[i].Bienes_C5.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SubTotalBienes_@Model.ExSocios[i].IdPersona" data-val="@(ViewBag.Rol == 3 ? SubTotalBienesExSocio : Model.ExSocios[i].SubTotalBienes)">
+
+                        $ @(ViewBag.Rol == 3 ? SubTotalBienesExSocio.ToString("N0") : Model.ExSocios[i].SubTotalBienes.ToString("N0"))
+                    </div>
+                </td>
+
+                @if (ViewBag.Rol == 3)
+                {
+                    AcuSubGananciasExSocio = AcuSubGananciasExSocio + SubTotalGananciasExSocio;
+                    AcuSubBienesExSocio = AcuSubBienesExSocio + SubTotalBienesExSocio;
+                }
+
+                <td>
+                    <div id="ImporteTotal_@Model.ExSocios[i].IdPersona" data-val="@(ViewBag.Rol == 3 ? (SubTotalGananciasExSocio + SubTotalBienesExSocio) : (SumSubTotalesGanancias_Base_ExSocio + SumSubTotalesBienes_Base_ExSocio))">
+
+                        $ @(ViewBag.Rol == 3 ? (SubTotalGananciasExSocio + SubTotalBienesExSocio).ToString("N0") : Model.ExSocios[i].Total.ToString("N0"))
+                    </div>
+                </td>
+
+
+
+            </tr>
+        }
+
+        //---------------------total ExSocios
+    }
+            <tr id="totalExSocios" class="bg-total">
+                <td class="fixed-data-total">Total ExSocios</td>
+
+                <td>
+                    <div id="ImporteCG1_TotalGananciasExSocios" >
+                        $ @ImporteCG1Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCG2Total_ExSocios">
+                        $ @ImporteCG2Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCG3Total_ExSocios" >
+                        $ @ImporteCG3Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCG4Total_ExSocios" >
+                        $ @ImporteCG4Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCG5Total_ExSocios" >
+                        $ @ImporteCG5Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="Importe_SumSubGanancias_ExSocios">
+                        $ @(ViewBag.Rol == 3 ? AcuSubGananciasExSocio.ToString("N0") : SumSubTotalesGanancias_Base_ExSocio.ToString("N0"))
+                    </div>
+                </td>
+
+
+                <td>
+                    <div id="ImporteCB1_TotalGananciasExSocios">
+                        $ @ImporteCB1Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCG2Total_ExSocios">
+                        $ @ImporteCB2Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCB3Total_ExSocios">
+                        $ @ImporteCB3Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCB4Total_ExSocios">
+                        $ @ImporteCB4Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="ImporteCB5Total_ExSocios">
+                        $ @ImporteCB5Total_ExSocios.ToString("N0")
+                    </div>
+                </td>
+
+                <td>
+                    <div id="Importe_SumSubBienes_ExSocios">
+                        $ @(ViewBag.Rol == 3 ? AcuSubBienesExSocio.ToString("N0") : SumSubTotalesBienes_Base_ExSocio.ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="Importe_TotalExSocios">
+                        $ @(ViewBag.Rol == 3 ? (AcuSubBienesExSocio + AcuSubGananciasExSocio).ToString("N0") : SumTotalesExSocios.ToString("N0"))
+                    </div>
+                </td>
+            </tr>
+
+    //------------------------------total final
+            <tr class="bg-totalGeneral">
+                <td class="fixed-data-sumtotal">TOTAL</td>
+
+                <td>
+                    <div id="SumaCG1">
+                        $ @((ImporteCG1Total_Socios + ImporteCG1Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCG2">
+                        $ @((ImporteCG2Total_Socios + ImporteCG2Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCG3">
+                        $ @((ImporteCG3Total_Socios + ImporteCG3Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCG4">
+                        $ @((ImporteCG4Total_Socios + ImporteCG4Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCG5">
+                        $ @((ImporteCG5Total_Socios + ImporteCG5Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaSubG">
+                        $ @(ViewBag.Rol == 3 ? (AcuSubGananciasSocio + AcuSubGananciasExSocio).ToString("N0") : (SumSubTotalesGanancias_Base_Socio + SumSubTotalesGanancias_Base_ExSocio).ToString("N0") )
+                    </div>
+                </td>
+
+
+                <td>
+                    <div id="SumaCB1">
+                        $ @((ImporteCB1Total_Socios + ImporteCB1Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCB2">
+                        $ @((ImporteCB2Total_Socios + ImporteCB2Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCB3">
+                        $ @((ImporteCB3Total_Socios + ImporteCB3Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCB4">
+                        $ @((ImporteCB4Total_Socios + ImporteCB4Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaCB5">
+                        $ @((ImporteCB5Total_Socios + ImporteCB5Total_ExSocios).ToString("N0"))
+                    </div>
+                </td>
+
+                <td>
+                    <div id="SumaSubB">
+                        $ @(ViewBag.Rol == 3 ? (AcuSubBienesSocio + AcuSubBienesExSocio).ToString("N0") : (SumSubTotalesBienes_Base_Socio + SumSubTotalesBienes_Base_ExSocio).ToString("N0") )
+                    </div>
+                </td>
+
+                <td>
+                    <div id="total">
+                        $ @(ViewBag.Rol == 3 ? (AcuSubBienesExSocio + AcuSubGananciasExSocio + AcuSubBienesSocio + AcuSubGananciasSocio).ToString("N0") : (SumTotales).ToString("N0") )
+
+                    </div>
+                </td>
+            </tr>
+}
+
+
+
+
+
+
+
+

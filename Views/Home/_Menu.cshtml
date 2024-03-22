@@ -1,0 +1,370 @@
+﻿@model DistribucionUtilidades.Models.VM.MenuVM
+@{
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="content-center padding-btm">
+            <ul class="nav nav-tabs">
+
+                @{
+                    IList<string> banners = new List<string>();
+
+                    if (Model.Proceso != null && Model.EsSocio != 1)
+                    {
+                        <li role="presentation" class="active tabMenuIndep">
+                            <button id="btnEstadoProceso" class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarEstadoProceso(); return false;">Estado del proceso</button>
+                        </li>
+                    }
+
+
+                    switch ((int)Model.Rol)
+                    {
+                        //SocioAdmin
+                        case 1:
+                            {
+                                <li role="presentation" class="tabMenuIndep">
+                                    <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarGestionUsuarios(this); return false;">Gestión de Usuarios</button>
+                                </li>
+
+                                if (Model.Proceso != null)
+                                {
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.PendienteDeAprobacionDeImportes)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarValidacionImportes(this); return false;">Validación importes</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la validación de importes");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.CálculosInicialesModificados)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarValidacionADMCalculosIniciales(this); return false;">Validación calculos Iniciales</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la validación de cálculos iniciales");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                        Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.ImporteIteraciónPendienteDeAprobación)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarValidacionImportesIteracion(this); return false;">Validación Importes de Iteración</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la validación de importes de iteración");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.ValidacionDeAjustesPendiente)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarValidacionAjustesEjercicio(this); return false;">Validación Ajustes Ejercicio</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la validación de ajustes del ejercicio");
+                                    }
+
+
+                                }
+
+                                break;
+                            }
+                        //Finanzas
+                        case 2:
+                            {
+                                if (Model.MostrarTabCrearProceso)
+                                {
+                                    <li role="presentation" class="tabMenu">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarDefinicionTipoProceso(this); return false;">Nuevo Proceso</button>
+                                    </li>
+                                }
+
+                                if (Model.Proceso != null)
+                                {
+
+                                    if (Model.Proceso.IdEstadoProceso >= (int)Enums.EstadoProceso.ImportesAprobados && Model.Proceso.TipoProceso == 1)
+                                    {
+
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarEnvioAuditores(this); return false;">Envio info a Auditores</button>
+                                        </li>
+
+                                        if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.ImportesAprobados)
+                                        {
+                                            banners.Add("Tiene pendiente en envío de información a auditores");
+                                        }
+
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.NuevoProceso || Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.ImportesRechazados)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaDeImportes(this); return false;">Carga de importes</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de importes para el proceso");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.BonosRetirosCargados ||
+                                            Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.CálculosInicialesRechazados)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarValidacionCalculosIniciales(this); return false;">Validación calculos Iniciales</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la validación de los cálculos iniciales");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.CálculosInicialesValidados ||
+                                                (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                                 Model.Iteracion.IdEstadoIteracion >= (int)Enums.EstadoIteracion.FechaDePagoIngresada))
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarImpuestosEstimados(this); return false;">Carga impuestos estimados</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de los impuestos estimados");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion && (
+                                                            Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.PorcentajesParcialesCalculados ||
+                                                            Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.ImporteIteraciónRechazado))
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarDeValorDistribucionIteracion(this); return false;">Carga del valor a distribuir en iteración</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga del valor a distribuir para la iteración");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                        (Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.RetencionesPendientesDeAprobación
+                                        || Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.GastosCorregidosPendientesDeAprobación
+                                        || Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.RetencionesCorregidasPendientesDeAprobación))
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarValidacionDistribucion(this); return false;">Revisión y Validación de Distribución </button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la revisión y validación de la distribución");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.AjustesPendientes ||
+                                           Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.AjustesRechazados)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaAjustesEjercicio(this); return false;">Carga de Ajustes del Ejercicio </button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de ajustes para el ejercicio");
+                                    }
+
+                                    @*<li role="presentation" class="tabMenuIndep">
+                                <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarBorradorImpuestosEstimados(this); return false;">Borrador Impuestos Estimados</button>
+                            </li>
+
+                            <li role="presentation" class="tabMenuIndep">
+                                <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaInformacionCuentas(this); return false;">Carga Información de Cuentas</button>
+                            </li>
+
+                            <li role="presentation" class="tabMenuIndep">
+                                <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarConsultaImpuestosReales(this); return false;">Consulta Impuestos Reales</button>
+                            </li>
+
+                            <li role="presentation" class="tabMenuIndep">
+                                <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarAvanceDistribucion(this); return false;">Avance de Distribución </button>
+                            </li>*@
+
+                                    <li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2 dropdown-toggle" type="button" id="dropdownMenuIndep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Módulos Independientes
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIndep">
+                                            <button class="dropdown-item" onclick="CargarBorradorImpuestosEstimados(this); return false;">Borrador Impuestos Estimados</button>
+                                            <button class="dropdown-item" onclick="CargaInformacionCuentas(this); return false;">Carga Información de Cuentas</button>
+                                            <button class="dropdown-item" onclick="CargarConsultaImpuestosReales(this); return false;">Consulta Impuestos Reales</button>
+                                            <button class="dropdown-item" onclick="CargarAvanceDistribucion(this); return false;">Avance de Distribución </button>
+                                            <button class="dropdown-item" onclick="CargarPlanDePagosImpuestos(this); return false;">Plan de Pagos de Impuestos </button>
+                                            <button class="dropdown-item" onclick="CargarReporteDistribuciones(this); return false;">Reporte de Distribuciones</button>
+                                            <button class="dropdown-item" onclick="CargarReporteParaInformacionContable(this); return false;">Reporte para Informacion Contable</button>
+
+                                        </div>
+                                    </li>
+
+
+                                }
+
+                                break;
+                            }
+                        //RRHH
+                        case 3:
+                            {
+                                if (Model.Proceso != null)
+                                {
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.InfoAuditoriaEnviada
+                                     || Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.BonosRetirosRechazados
+                                     || (Model.Proceso.TipoProceso == (int)Enums.TipoProceso.Provisorio && Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.ImportesAprobados))
+                                    {
+
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarBonosYRetiros(this); return false;">Carga de Bonos y Retiros</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de bonos y retiros");
+                                    }
+
+                                    if (Model.Iteracion.EsDistribucionEnPesos == true && (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                        (Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.ImportePesosIteraciónAprobado
+                                        || Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.GastosRechazados
+                                        || Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.GastosYRetencionesRechazadas
+                                        || Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.RetencionesCorregidasPendientesDeGastos)))
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaDeGastosViajes(this); return false;">Carga de Gastos de Viajes</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de gastos de viajes");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion && ((Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.GastosPendientesDeAprobación ||
+                                                    Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.ImporteDólaresIteraciónAprobado ||
+                                                    Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.RetencionesRechazadas ||
+                                                    Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.GastosYRetencionesRechazadas ||
+                                                    Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.GastosCorregidosPendientesDeRetenciones)))
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaRetenciones(this); return false;">Carga de Retenciones</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de retenciones");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                            Model.Iteracion.IdEstadoIteracion == (int)Enums.EstadoIteracion.DistribuciónAprobada)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaFechaPago(this); return false;">Carga Fecha de Pago</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de la fecha de pago de la distribución");
+                                    }
+
+                                    @*<li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaInformacionCuentas(this); return false;">Carga información de Cuentas</button>
+                                    </li>*@
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                            Model.Iteraciones.Where(xx => xx.IdEstadoIteracion == (int)Enums.EstadoIteracion.FechaDePagoIngresada).Count() > 0)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaValidacionCuentas(this); return false;">Validación de Cuentas</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la validación de cuentas");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion &&
+                                           Model.Iteraciones.Where(xx => xx.IdEstadoIteracion == (int)Enums.EstadoIteracion.ValidaciónDeCuentasRealizada).Count() > 0)
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaNroConstanciaPago(this); return false;">Carga Nro Constancia de Pago</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la carga de la constancia de pago");
+                                    }
+
+                                    if (Model.Proceso.IdEstadoProceso == (int)Enums.EstadoProceso.EnIteracion && (
+                                        Model.Iteraciones.Where(xx => xx.IdEstadoIteracion == (int)Enums.EstadoIteracion.ConstanciaDePagoIngresada).Count() > 0 ||
+                                        Model.Iteraciones.Where(xx => xx.IdEstadoIteracion == (int)Enums.EstadoIteracion.ConstanciaDePagoOmitida).Count() > 0)
+                                        )
+                                    {
+                                        <li role="presentation" class="tabMenu">
+                                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargaGeneracionDocsPagos(this); return false;">Generación de Documentos para Pagos</button>
+                                        </li>
+
+                                        banners.Add("Tiene pendiente la generación de los documentos de pago y registración de los mismos.");
+                                    }
+
+                                    @*<li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarPagosAdeudados(this); return false;">Pagos Adeudados</button>
+                                    </li>
+
+                                    <li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="ConsultaDePagos(this); return false;">Consulta de Pagos</button>
+                                    </li>
+
+                                    <li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarImpuestosReales(this); return false;">Carga Impuestos Reales</button>
+                                    </li>
+
+                                    <li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarConsultaImpuestosReales(this); return false;">Consulta Impuestos Reales</button>
+                                    </li>*@
+
+                                    <li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2 dropdown-toggle" type="button" id="dropdownMenuIndep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Módulos Independientes
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIndep">
+                                            <button class="dropdown-item" onclick="CargaInformacionCuentas(this); return false;">Carga información de Cuentas</button>
+                                            <button class="dropdown-item" onclick="CargarPagosAdeudados(this); return false;">Pagos Adeudados</button>
+                                            <button class="dropdown-item" onclick="ConsultaDePagos(this); return false;">Consulta de Pagos</button>
+                                            <button class="dropdown-item" onclick="CargarImpuestosReales(this); return false;">Carga Impuestos Reales</button>
+                                            <button class="dropdown-item" onclick="CargarConsultaImpuestosReales(this); return false;">Consulta Impuestos Reales</button>
+                                            <button class="dropdown-item" onclick="CargarPlanDePagosImpuestos(this); return false;">Plan de Pagos de Impuestos </button>
+                                            <button class="dropdown-item" onclick="CargarAvanceDistribucion(this); return false;">Avance de Distribución </button>
+                                            <button class="dropdown-item" onclick="CargarReporteDistribuciones(this); return false;">Reporte de Distribuciones</button>
+                                            <button class="dropdown-item" onclick="CargarReporteParaInformacionContable(this); return false;">Reporte para Informacion Contable</button>
+                                            </div>
+                                    </li>
+
+                                }
+                                else
+                                {
+                                    <li role="presentation" class="tabMenuIndep">
+                                        <button class="tab-btn bold padding-btm pl-2 pr-2 dropdown-toggle" type="button" id="dropdownMenuIndep" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Módulos Independientes
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuIndep">
+                                            <button class="dropdown-item" onclick="CargaInformacionCuentas(this); return false;">Carga información de Cuentas</button>
+                                            <button class="dropdown-item" onclick="ConsultaDePagos(this); return false;">Consulta de Pagos</button>
+                                        </div>
+                                    </li>
+                                }
+
+                                break;
+                            }
+
+                    }
+                }
+
+
+                @{if (Model.EsSocio == 1)
+                    {
+                        <li role="presentation" class="tabMenuIndep">
+                            <button class="tab-btn bold padding-btm pl-2 pr-2" onclick="CargarDescargaRecibos(this); return false;">Descarga de Recibos</button>
+                        </li>
+                    } }
+            </ul>
+
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //;
+
+        var data = @Json.Serialize(banners);
+        //var banners = JSON.parse('@Html.Raw(banners)');
+        CargarBanners(data);
+    })
+
+</script>
+

@@ -1,0 +1,203 @@
+﻿
+@model DistribucionUtilidades.Models.VM.ValidacionImportesIteracionVM
+@using System.Globalization;
+
+@{ }
+
+
+<div id="Alerts_ValidacionImportesIteracion"></div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        @{
+            if (ViewBag.TipoProceso == 1)
+            {
+                <h3>Validación de Importe a Distribuir en Iteración (Proceso Real)</h3>
+            }
+            else
+            {
+                <h3 style="color:#ff6a00">Validación de Importe a Distribuir en Iteración (Proceso Provisorio)</h3>
+            }
+        }
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="leyenda">Revise el cuadro y compruebe que los importes a distribuir son correctos. En caso de enviar a revisión, el usuario de Finanzas deberá realizar las correcciones necesarias.</p>
+    </div>
+</div>
+
+
+    <div class="row mt-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <table id="ImportesIteracionTable" class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th width="40%" scope="col">Socio/Ex-Socio</th>
+                        <th width="20%" scope="col">% Distribución Parcial</th>
+                        <th width="20%" scope="col">Distribución Parcial en $</th>
+                        <th width="20%" scope="col">Distribución Parcial en U$D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model.Socios.Count > 0)
+                        {
+                            for (int i = 0; i < Model.Socios.Count; i++)
+                            {
+
+                                <tr id="@Model.Socios[i].PersonaId" data-type="Socio" data-row="@i" >
+                                    <td>@Model.Socios[i].Socio</td>
+                                    <td>
+                                        <div id="Porcentaje_@Model.Socios[i].PersonaId">
+                                            @Model.Socios[i].Porcentaje.ToString("P4")
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImportePesos_@Model.Socios[i].PersonaId">
+                                            $ @Model.Socios[i].ImportePesos.ToString("N0")
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteDolares_@Model.Socios[i].PersonaId">
+                                            $ @Model.Socios[i].ImporteDolares.ToString("N0")
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+                        <tr id="totalSocios" class="bg-total">
+                            <td>Total socios</td>
+                            <td>
+                                <div id="Importe_TotalSociosPorcentaje">
+                                    @Model.TotalSociosPorcentaje.ToString("P4")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="Importe_TotalSociosPesos">
+                                    $ @Model.TotalSociosPesos.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="Importe_TotalSociosDolares">
+                                    $ @Model.TotalSociosDolares.ToString("N0")
+                                </div>
+                            </td>
+
+                        </tr>
+                            //--------------------------------------------------------------------------------
+                            if (Model.ExSocios.Count > 0)
+                            {
+
+                                for (int i = 0; i < Model.ExSocios.Count; i++)
+                                {
+
+                                <tr id="@Model.ExSocios[i].PersonaId" data-type="ExSocio" data-row="@i" >
+                                    <td>@Model.ExSocios[i].Socio</td>
+                                    <td>
+                                        <div id="Porcentaje_@Model.ExSocios[i].PersonaId">
+                                            @Model.ExSocios[i].Porcentaje.ToString("P4")
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImportePesos_@Model.ExSocios[i].PersonaId">
+                                            $ @Model.ExSocios[i].ImportePesos.ToString("N0")
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteDolares_@Model.ExSocios[i].PersonaId">
+                                            $ @Model.ExSocios[i].ImporteDolares.ToString("N0")
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            }
+
+
+                        }
+                        <tr id="totalExSocios" class="bg-total">
+                            <td>Total ExSocios</td>
+                            <td>
+                                <div id="Importe_TotalExSociosPorcentaje">
+                                    @Model.TotalExSociosPorcentaje.ToString("P4")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="Importe_TotalExSociosPesos">
+                                    $ @Model.TotalExSociosPesos.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalExSociosDolares">
+                                    $ @Model.TotalExSociosDolares.ToString("N0")
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr class="bg-totalGeneral">
+                            <td>TOTAL</td>
+                            <td>
+                                <div id="TotalGeneral_Porcentaje">
+                                    @Model.TotalGeneralPorcentaje.ToString("P4")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="TotalGeneral_Pesos">
+                                    $ @Model.TotalGeneralPesos.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="TotalGeneral_Dolares">
+                                    $ @Model.TotalGeneralDolares.ToString("N0")
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-center">
+                <button type="button" class="btn btn-success btn-sm pl-3 pr-3 mt-5" onclick="AprobarImportesIteracion();">Aprobar</button>
+                <button type="button" class="btn btn-danger btn-sm pl-3 pr-3 mt-5" onclick="ModalRechazarImportesIteracion();">Rechazar</button>
+            </div>
+
+        </div>
+    </div>
+
+
+<partial name="_ValidationScriptsPartial" />
+
+<environment include="Development">
+    <script src="~/js/ValidacionImportesIteracion.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/ValidacionImportesIteracion.min.js" asp-append-version="true"></script>
+</environment>
+
+<script type="text/javascript">
+    var enDolares = @Model.enDolares.ToString().ToLower();
+
+    $(document).ready(function () {
+
+    })
+
+</script>

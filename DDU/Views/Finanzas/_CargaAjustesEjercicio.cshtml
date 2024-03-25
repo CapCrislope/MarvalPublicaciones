@@ -1,0 +1,519 @@
+﻿@model DistribucionUtilidades.Models.VM.CargaAjustesEjercicioVM
+
+
+<div id="Alerts_CargaAjustesEjercicio"></div>
+
+@Html.HiddenFor(model => Model.Modo)
+@Html.HiddenFor(model => Model.IdAjuste)
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div>
+            @{
+                if (ViewBag.TipoProceso == 1)
+                {
+                    <h3>Carga de ajustes del ejercicio (Proceso Real)</h3>
+                }
+                else
+                {
+                    <h3 style="color:#ff6a00">Carga de ajustes del ejercicio (Proceso Provisorio)</h3>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="leyenda">
+            Luego de realizar una validación con los auditores y solo en casos necesarios, ingrese el importe de ajuste correspondiente a cada socio. Este valor podrá ser positivo o negativo.<br />
+            En caso de haber cargado un valor de ajuste, será necesario completar el casillero de observaciones, en donde se indicará el motivo del ajuste.<br />
+            Al guardar la información, se le enviará un mail al socio administrador para que valide los ajustes realizados.
+        </p>
+    </div>
+</div>
+
+@{ if (Model.Modo == "EDICION")
+    {
+        <div class="row mt-3 mb-4">
+
+            <div class="form-group-sm col-md-4" style="color: #db2121; font-size: 16px;">
+                <label>Nota de Revisión</label>
+                @{if (Model.NotaRevision != "" && Model.NotaRevision != null)
+                    {
+                        <div>@Model.NotaRevision</div>
+                    }
+                    else
+                    {
+                        <div>-</div>
+                    }
+
+
+                }
+
+            </div>
+            <div class="col-md-8"></div>
+        </div>
+    }
+}
+
+<div class="live__scroll">
+    <div class="row">
+        <div class="col-md-12 live__scroll--box">
+            <table id="AjustesEjercicioTable" class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="fixed-col" width="1%" scope="col">Nº</th>
+                        <th class="fixed-col" width="15%" scope="col">Socio/Ex-Socio</th>
+                        <th width="9%" scope="col">Saldo Inicial</th>
+                        <th width="9%" scope="col">Total Bruto <br />Distribuido</th>
+                        <th width="9%" scope="col">Bienes<br />Personales</th>
+                        <th width="9%" scope="col">Saldo DDJJ<br />Bienes<br />Personales</th>
+                        <th width="9%" scope="col">Impuestos<br />Ganancias</th>
+                        <th width="9%" scope="col">Saldo DDJJ<br />Ganancias</th>
+                        <th width="9%" scope="col">Impuesto<br />Cedular</th>
+                        <th width="9%" scope="col">Saldo DDJJ<br />Impuesto<br />Cedular</th>
+                        <th width="15%" scope="col">Saldo</th>
+                        <th width="40%" style="min-width: 150px" scope="col">Ajuste</th>
+                        <th width="49%" style="min-width: 400px" scope="col">Observaciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @{
+                        int row = 1;
+
+                        // Totales de los SOCIOS
+                        long Importe_TotalSaldoInicialSocios = Model.AjustesSocios.Sum(item => item.SaldoInicial);
+                        long Importe_TotalDistribuidoSocios = Model.AjustesSocios.Sum(item => item.ImporteDistribucion);
+                        long Importe_TotalImpuestosGananciasSocios = Model.AjustesSocios.Sum(item => item.Ganancias);
+                        long Importe_TotalBienesPersonalesSocios = Model.AjustesSocios.Sum(item => item.BienesPersonales);
+                        long Importe_TotalSaldoDDJJBienesPersonalesSocios = Model.AjustesSocios.Sum(item => item.SaldoDDJJBienes);
+                        long Importe_TotalSaldoDDJJGananciasSocios = Model.AjustesSocios.Sum(item => item.SaldoDDJJGanancias);
+                        long Importe_TotalSaldoDDJJImpuestoCedularSocios = Model.AjustesSocios.Sum(item => item.SaldoDDJJCedular);
+                        long Importe_TotalImpuestoCedularSocios = Model.AjustesSocios.Sum(item => item.ImpuestoCedular);
+                        long Importe_TotalSaldoSocios = 0;
+                        long Importe_TotalAjustes_Socios = Model.AjustesSocios.Sum(item => item.Ajuste);
+
+
+                        // Totales de los ExSocios
+                        long Importe_TotalSaldoInicialExSocios = Model.AjustesExSocios.Sum(item => item.SaldoInicial);
+                        long Importe_TotalDistribuidoExSocios = Model.AjustesExSocios.Sum(item => item.ImporteDistribucion);
+                        long Importe_TotalImpuestosGananciasExSocios = Model.AjustesExSocios.Sum(item => item.Ganancias);
+                        long Importe_TotalBienesPersonalesExSocios = Model.AjustesExSocios.Sum(item => item.BienesPersonales);
+                        long Importe_TotalSaldoDDJJBienesPersonalesExSocios = Model.AjustesExSocios.Sum(item => item.SaldoDDJJBienes);
+                        long Importe_TotalSaldoDDJJGananciasExSocios = Model.AjustesExSocios.Sum(item => item.SaldoDDJJGanancias);
+                        long Importe_TotalSaldoDDJJImpuestoCedularExSocios = Model.AjustesExSocios.Sum(item => item.SaldoDDJJCedular);
+                        long Importe_TotalImpuestoCedularExSocios = Model.AjustesExSocios.Sum(item => item.ImpuestoCedular);
+                        long Importe_TotalSaldoExSocios = 0;
+                        long Importe_TotalAjustes_ExSocios = Model.AjustesExSocios.Sum(item => item.Ajuste);
+
+                        //----- Suma de los totales
+                        long SumaTotalSaldoInicial = Importe_TotalSaldoInicialSocios + Importe_TotalSaldoInicialExSocios;
+                        long SumaTotalDistribuido = Importe_TotalDistribuidoSocios + Importe_TotalDistribuidoExSocios;
+                        long SumaTotalImpuestosGanancias = Importe_TotalImpuestosGananciasSocios + Importe_TotalImpuestosGananciasExSocios;
+                        long SumaTotalBienesPersonales = Importe_TotalBienesPersonalesSocios + Importe_TotalBienesPersonalesExSocios;
+                        long SumaTotalSaldoDDJJBienesPersonales = Importe_TotalSaldoDDJJBienesPersonalesSocios + Importe_TotalSaldoDDJJBienesPersonalesExSocios;
+                        long SumaTotalSaldoDDJJGanancias = Importe_TotalSaldoDDJJGananciasSocios + Importe_TotalSaldoDDJJGananciasExSocios;
+                        long SumaTotalSaldoDDJJImpuestoCedular = Importe_TotalSaldoDDJJImpuestoCedularSocios + Importe_TotalSaldoDDJJImpuestoCedularExSocios;
+                        long SumaTotalImpuestoCedular = Importe_TotalImpuestoCedularSocios + Importe_TotalImpuestoCedularExSocios;
+                        long SumaTotalSaldos = Importe_TotalSaldoSocios + Importe_TotalSaldoExSocios;
+                        long SumaAjustes = Importe_TotalAjustes_Socios + Importe_TotalAjustes_ExSocios;
+
+                        if (Model.AjustesSocios.Count > 0)
+                        {
+                            for (int i = 0; i < Model.AjustesSocios.Count; i++)
+                            {
+                                <tr id="@Model.AjustesSocios[i].IdPersona" data-type="Socio" data-row="@i">
+                                    <td class="fixed-data">@row</td>
+                                    <td class="fixed-data">@Model.AjustesSocios[i].Socio</td>
+                                    <td>
+                                        <div>
+                                            $ @Model.AjustesSocios[i].SaldoInicial.ToString("N0")
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            $ @Model.AjustesSocios[i].ImporteDistribucion.ToString("N0")
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div id="ImporteBienesPersonales_@Model.AjustesSocios[i].IdPersona" data-val="@Model.AjustesSocios[i].BienesPersonales">
+                                            $ @Model.AjustesSocios[i].BienesPersonales.ToString("N0")
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteSaldoDDJJBienes_@Model.AjustesSocios[i].IdPersona" data-val="@Model.AjustesSocios[i].SaldoDDJJBienes">
+
+                                            $ @(Model.AjustesSocios[i].SaldoDDJJBienes.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteGanancias_@Model.AjustesSocios[i].IdPersona" data-val="@Model.AjustesSocios[i].Ganancias">
+                                            $ @(Model.AjustesSocios[i].Ganancias.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteSaldoDDJJGanancias_@Model.AjustesSocios[i].IdPersona" data-val="@Model.AjustesSocios[i].SaldoDDJJGanancias">
+
+                                            $ @(Model.AjustesSocios[i].SaldoDDJJGanancias.ToString("N0"))
+
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteImpuestoCedular_@Model.AjustesSocios[i].IdPersona" data-val="@Model.AjustesSocios[i].ImpuestoCedular">
+
+                                            $ @(Model.AjustesSocios[i].ImpuestoCedular.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteSaldoDDJJCedular_@Model.AjustesSocios[i].IdPersona" data-val="@Model.AjustesSocios[i].SaldoDDJJCedular">
+
+                                            $ @(Model.AjustesSocios[i].SaldoDDJJCedular.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="Importe_@Model.AjustesSocios[i].IdPersona">
+
+                                            @{
+                                                long AcumuladoSocio = (Model.AjustesSocios[i].SaldoInicial - (Model.AjustesSocios[i].ImpuestoCedular + Model.AjustesSocios[i].SaldoDDJJCedular +
+                                                                                                                                             Model.AjustesSocios[i].SaldoDDJJGanancias + Model.AjustesSocios[i].Ganancias +
+                                                                                                                                             Model.AjustesSocios[i].SaldoDDJJBienes + Model.AjustesSocios[i].BienesPersonales +
+                                                                                                                                             Model.AjustesSocios[i].ImporteDistribucion));
+                                                Importe_TotalSaldoSocios = Importe_TotalSaldoSocios + AcumuladoSocio;
+                                            }
+                                            $ @(AcumuladoSocio.ToString("N0"))
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @Html.EditorFor(model => Model.AjustesSocios[i].Ajuste, new { htmlAttributes = new { @data_type = "Socio", @data_id = @Model.AjustesSocios[i].IdPersona, @onChange = "sumByType(this)", @class = "form-control form-control-sm", @value = Model.AjustesSocios[i].Ajuste, @type = "number", @min = "0", @Id = "Ajuste_" + Model.AjustesSocios[i].IdPersona + "", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = "$ ", @data_politespace_reverse = "" } })
+                                            
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @Html.EditorFor(model => Model.AjustesSocios[i].Observaciones, new { htmlAttributes = new { @class = "form-control form-control-sm", @id = "Observacion_" + Model.AjustesSocios[i].IdPersona } })
+                                           
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                row+= 1;
+                            }
+                        }
+
+                        //----------------------totalSocios
+                        <tr id="totalSocios" class="bg-total">
+                            <td class="fixed-data-total">@row</td>
+                            <td class="fixed-data-total">Total Socios</td>
+                            <td>
+                                <div id="">
+                                    $ @Importe_TotalSaldoInicialSocios.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="">
+                                    $ @Importe_TotalDistribuidoSocios.ToString("N0")
+                                </div>
+
+                            </td>
+                            <td>
+                                <div id="Importe_TotalBienesPersonalesSocios" data-val="@Importe_TotalBienesPersonalesSocios">
+                                    $ @Importe_TotalBienesPersonalesSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalSaldoDDJJBienesPersonalesSocios" data-val="@Importe_TotalSaldoDDJJBienesPersonalesSocios">
+                                    $ @Importe_TotalSaldoDDJJBienesPersonalesSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalImpuestosGananciasSocios" data-val="@Importe_TotalImpuestosGananciasSocios">
+                                    $ @Importe_TotalImpuestosGananciasSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalSaldoDDJJGananciasSocios" data-val="@Importe_TotalSaldoDDJJGananciasSocios">
+                                    $ @Importe_TotalSaldoDDJJGananciasSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalImpuestoCedularSocios" data-val="@Importe_TotalImpuestoCedularSocios">
+                                    $ @Importe_TotalImpuestoCedularSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalSaldoDDJJImpuestoCedularSocios" data-val="@Importe_TotalSaldoDDJJImpuestoCedularSocios">
+                                    $ @Importe_TotalSaldoDDJJImpuestoCedularSocios.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="">
+                                    $ @Importe_TotalSaldoSocios.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="Importe_TotalAjustes_Socios" data-val="@Importe_TotalAjustes_Socios">
+                                    $ @Importe_TotalAjustes_Socios.ToString("N0")
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        
+                        row+=1;
+
+                        //--------------------------------------------------------------------------------
+                        if (Model.AjustesExSocios.Count > 0)
+                        {
+
+                            for (int i = 0; i < Model.AjustesExSocios.Count; i++)
+                            {
+                                <tr id="@Model.AjustesExSocios[i].IdPersona" data-type="ExSocio" data-row="@i">
+                                    <td class="fixed-data">@row</td>
+                                    <td class="fixed-data">@Model.AjustesExSocios[i].Socio</td>
+                                    <td>
+                                        <div>
+                                            $ @Model.AjustesExSocios[i].SaldoInicial.ToString("N0")
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            $ @Model.AjustesExSocios[i].ImporteDistribucion.ToString("N0")
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div id="ImporteBienesPersonales_@Model.AjustesExSocios[i].IdPersona" data-val="@Model.AjustesExSocios[i].BienesPersonales">
+                                            $ @(Model.AjustesExSocios[i].BienesPersonales.ToString("N0"))
+
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteSaldoDDJJBienes_@Model.AjustesExSocios[i].IdPersona" data-val="@Model.AjustesExSocios[i].SaldoDDJJBienes">
+                                            $ @(Model.AjustesExSocios[i].SaldoDDJJBienes.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteGanancias_@Model.AjustesExSocios[i].IdPersona" data-val="@Model.AjustesExSocios[i].Ganancias">
+                                            $ @(Model.AjustesExSocios[i].Ganancias.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteSaldoDDJJGanancias_@Model.AjustesExSocios[i].IdPersona" data-val="@Model.AjustesExSocios[i].SaldoDDJJGanancias">
+                                            $ @(Model.AjustesExSocios[i].SaldoDDJJGanancias.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteImpuestoCedular_@Model.AjustesExSocios[i].IdPersona" data-val="@Model.AjustesExSocios[i].ImpuestoCedular">
+                                            $ @(Model.AjustesExSocios[i].ImpuestoCedular.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="ImporteSaldoDDJJCedular_@Model.AjustesExSocios[i].IdPersona" data-val="@Model.AjustesExSocios[i].SaldoDDJJCedular">
+                                            $ @(Model.AjustesExSocios[i].SaldoDDJJCedular.ToString("N0"))
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="Importe_@Model.AjustesExSocios[i].IdPersona">
+
+                                            @{
+                                                long AcumuladoExSocio = (Model.AjustesExSocios[i].SaldoInicial - (Model.AjustesExSocios[i].ImpuestoCedular + Model.AjustesExSocios[i].SaldoDDJJCedular +
+                                                                                                                                             Model.AjustesExSocios[i].SaldoDDJJGanancias + Model.AjustesExSocios[i].Ganancias +
+                                                                                                                                             Model.AjustesExSocios[i].SaldoDDJJBienes + Model.AjustesExSocios[i].BienesPersonales +
+                                                                                                                                             Model.AjustesExSocios[i].ImporteDistribucion));
+                                                Importe_TotalSaldoExSocios = Importe_TotalSaldoExSocios + AcumuladoExSocio;
+                                            }
+                                            $ @(AcumuladoExSocio.ToString("N0"))
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @Html.EditorFor(model => Model.AjustesExSocios[i].Ajuste, new { htmlAttributes = new { @data_type = "ExSocio", @data_id = @Model.AjustesExSocios[i].IdPersona, @onChange = "sumByType(this)", @class = "form-control form-control-sm", @value = Model.AjustesExSocios[i].Ajuste, @type = "number", @min = "0", @Id = "Ajuste_" + Model.AjustesExSocios[i].IdPersona + "", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = "$ ", @data_politespace_reverse = "" } })
+                                            @Html.ValidationMessageFor(model => Model.AjustesExSocios[i].Ajuste)
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div>
+                                            @Html.EditorFor(model => Model.AjustesExSocios[i].Observaciones, new { htmlAttributes = new { @class = "form-control form-control-sm", @id = "Observacion_" + Model.AjustesExSocios[i].IdPersona } })
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                row+=1;
+
+                            }
+
+                            //---------------------total ExSocios
+                        }
+                        <tr id="totalExSocios" class="bg-total">
+                            <td class="fixed-data-total">@row</td>
+                            <td class="fixed-data-total">Total ExSocios</td>
+                            <td>
+                                <div id="">
+                                    $ @Importe_TotalSaldoInicialExSocios.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="">
+                                    $ @Importe_TotalDistribuidoExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_Importe_TotalBienesPersonalesExSocios" data-val="@Importe_TotalBienesPersonalesExSocios">
+                                    $ @Importe_TotalBienesPersonalesExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalSaldoDDJJBienesPersonalesExSocios" data-val="@Importe_TotalSaldoDDJJBienesPersonalesExSocios">
+                                    $ @Importe_TotalSaldoDDJJBienesPersonalesExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalImpuestosGananciasExSocios" data-val="@Importe_TotalImpuestosGananciasExSocios">
+                                    $ @Importe_TotalImpuestosGananciasExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalSaldoDDJJGananciasExSocios" data-val="@Importe_TotalSaldoDDJJGananciasExSocios">
+                                    $ @Importe_TotalSaldoDDJJGananciasExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalImpuestoCedularExSocios" data-val="@Importe_TotalImpuestoCedularExSocios">
+                                    $ @Importe_TotalImpuestoCedularExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="Importe_TotalSaldoDDJJImpuestoCedularExSocios" data-val="@Importe_TotalSaldoDDJJImpuestoCedularExSocios">
+                                    $ @Importe_TotalSaldoDDJJImpuestoCedularExSocios.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="Importe_TotalSaldoExSocios">
+                                    $ @Importe_TotalSaldoExSocios.ToString("N0")
+                                </div>
+
+                            </td>
+                            <td>
+                                <div id="Importe_TotalAjustes_ExSocios" data-val="@Importe_TotalAjustes_ExSocios">
+                                    $ @Importe_TotalAjustes_ExSocios.ToString("N0")
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+
+                        row+=1;
+
+                        //------------------------------total final
+                        <tr class="bg-totalGeneral">
+                            <td class="fixed-data-sumtotal">@row</td>
+                            <td class="fixed-data-sumtotal">TOTAL</td>
+                            <td>
+                                <div id="">
+                                    $ @SumaTotalSaldoInicial.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="">
+                                    $ @SumaTotalDistribuido.ToString("N0")
+                                </div>
+                            </td>
+                            <td>
+                                <div id="SumaTotalBienesPersonales">
+                                    $ @SumaTotalBienesPersonales.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="SumaTotalSaldoDDJJBienesPersonales">
+                                    $ @SumaTotalSaldoDDJJBienesPersonales.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="SumaTotalImpuestosGanancias">
+                                    $ @SumaTotalImpuestosGanancias.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="SumaTotalSaldoDDJJGanancias">
+                                    $ @SumaTotalSaldoDDJJGanancias.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="SumaTotalImpuestoCedular">
+                                    $ @SumaTotalImpuestoCedular.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="SumaTotalSaldoDDJJImpuestoCedular">
+                                    $ @SumaTotalSaldoDDJJImpuestoCedular.ToString("N0")
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="total">
+                                    $ @((Importe_TotalSaldoSocios + Importe_TotalSaldoExSocios).ToString("N0"))
+                                </div>
+                            </td>
+                            <td>
+                                <div id="SumaAjustes">
+                                    $ @SumaAjustes.ToString("N0")
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12 text-center">
+        <button type="button" class="btn btn-success btn-sm pl-3 pr-3 mt-5" onclick="guardarAjustesEjercicio()">Guardar Ajustes</button>
+        <button type="button" class="btn btn-danger btn-sm pl-3 pr-3 mt-5" onclick="ModalRechazarImpuestosReales();">Rechazar Impuestos Reales</button>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+<environment include="Development">
+    <script src="~/js/CargaAjustesEjercicio.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/CargaAjustesEjercicio.min.js" asp-append-version="true"></script>
+</environment>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("input[type=number]").politespace();
+    })
+
+</script>

@@ -1,0 +1,140 @@
+﻿
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        @{
+            if (ViewBag.TipoProceso == 1)
+            {
+                <h3>Plan de Pagos de Impuestos (Proceso Real)</h3>
+            }
+            else
+            {
+                <h3 style="color:#ff6a00">Plan de Pagos de Impuestos (Proceso Provisorio)</h3>
+            }
+        }
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="leyenda">
+            Cargue y modifique la información referida al plan de pagos de impuestos de cada uno de los socios.
+        </p>
+    </div>
+</div>
+
+@{
+    if (ViewBag.Rol == 3)
+    {
+        <form id="formImport" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Excel de impuestos </label>
+                    <div class="custom-file">
+
+                        <input type="file" class="custom-file-input" name="excelFile" id="excelFile" accept=".xls, .xlsx" lang="es">
+                        <label class="custom-file-label" for="customFileLang">Seleccionar Archivo</label>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div>
+                        <button id="btnCargarExcel" type="button" class="btn btn-primary btn-sm" style="margin-top:31px;" onclick="ValidarDatosExcel()">Cargar</button>
+                    </div>
+                </div>
+                <div class="col-md-7" style="padding-top: 35px">
+                    <a href="/Templates/PlanDePago.xlsx" target="_blank">Descargar Template</a>
+                </div>
+            </div>
+            </form>
+            }
+            }
+
+
+            <div class="row mt-3 live__scroll">
+                <div class="col-md-12 live__scroll--box">
+                    <div class="table-responsive">
+                        <table id="planPagosTable" class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="fixed-col" width="20%" scope="col">Socio/Ex-Socio</th>
+                                    <th width="11%" scope="col">Cuota 1<br />Anticipo<br />Ganancias</th>
+                                    <th width="11%" scope="col">Cuota 2<br />Anticipo<br />Ganancias</th>
+                                    <th width="11%" scope="col">Cuota 3<br />Anticipo<br />Ganancias</th>
+                                    <th width="11%" scope="col">Cuota 4<br />Anticipo<br />Ganancias</th>
+                                    <th width="11%" scope="col">Cuota 5<br />Anticipo<br />Ganancias</th>
+                                    <th width="11%" scope="col">Subtotal <br />Anticipo<br />Ganancias</th>
+                                    <th width="11%" scope="col">Cuota 1<br />Anticipo<br />Bienes<br />personales</th>
+                                    <th width="11%" scope="col">Cuota 2<br />Anticipo<br />Bienes<br />personales</th>
+                                    <th width="11%" scope="col">Cuota 3<br />Anticipo<br />Bienes<br />personales</th>
+                                    <th width="11%" scope="col">Cuota 4<br />Anticipo<br />Bienes<br />personales</th>
+                                    <th width="11%" scope="col">Cuota 5<br />Anticipo<br />Bienes<br />personales</th>
+                                    <th width="11%" scope="col">Subtotal <br />Anticipo<br />Bienes<br />personales</th>
+
+                                    <th width="14%">Total</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="TablaPlanPagosImpuestos">
+                                @if (ViewBag.Rol == 3)
+                                {
+                                    <tr><td colspan="14" style="text-align:center">Seleccione un archivo excel.</td></tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            @{ if (ViewBag.Rol == 3)
+                {
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-4" style="text-align:center;">
+                    <button type="button" class="btn btn-primary btn-sm" style="margin-top:29px;" data-toggle="confirmation" data-placement="left" data-singleton="true" data-on-confirm="" data-title="¿Está seguro?">Guardar</button>
+              </div>
+                <div class="col-4"></div>
+            </div>
+
+                } }
+
+            <partial name="_ValidationScriptsPartial" />
+            <environment include="Development">
+                <script src="~/js/PlanPagosImpuestos.js" asp-append-version="true"></script>
+            </environment>
+            <environment exclude="Development">
+                <script src="~/js/PlanPagosImpuestos.min.js" asp-append-version="true"></script>
+            </environment>
+
+
+            <script type="text/javascript">
+
+    $(document).ready(function () {
+
+        var rol = @ViewBag.Rol;
+
+       // if (rol != 3) {
+            loadTable(null)
+        //}
+
+        InitializeConfirmationPop(GuardarPlanPagoImpuestos)
+
+        $('#excelFile').on('change',
+            function (e) {
+                //get the file name
+                ;
+                var fileName = e.target.files[0].name;
+
+                //replace the "Choose a file" label
+                $(this).next('.custom-file-label').html(fileName);
+            })
+
+
+    })
+
+            </script>

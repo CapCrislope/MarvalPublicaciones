@@ -1,0 +1,47 @@
+﻿
+
+@{ string identif = "_ModalAgregarSocio";}
+
+<div id="Alerts@{@identif}"></div>
+
+<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Revisar información</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="leyenda">Complete la nota de revisión que visualizará el usuario de finanzas para realizar las correcciones correspondientes.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group-sm col-md-12">
+                    <label>Nota de revisión</label>
+                    <div>
+                        <textarea class="form-control" id="notaRevision" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer mt-3">
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="RechazarImportes()">Guardar</button>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+
+    })
+
+</script>

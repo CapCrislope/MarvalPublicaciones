@@ -1,0 +1,97 @@
+﻿@model DistribucionUtilidades.Models.VM.ConsultaPagoVM
+
+
+<div class="row mt-3">
+    <div class="col-md-12">
+        <div class="table-responsive">
+            @if (Model.Socios.Count > 0)
+            {
+                <table id="GeneracionDocsPagosTable" class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="20%" scope="col">Socio</th>
+                            @{
+                                foreach (var item in Model.ColIteracion)
+                                {
+                                    <th width="20%" scope="col">
+                                        @item.Item1
+                                        <a href="/Independiente/GenerarZipDeRecibos?idIteracion=@item.Item2" target="_blank" class="btn btn-success btn-sm">
+                                            <i class="fa fa-download" aria-hidden="true"></i>
+                                        </a>
+                                    </th>
+                                }
+                            }
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            string SocioActual = "";
+                            string SocioAnterior = "";
+
+                            foreach (var item in Model.Socios)
+                            {
+                                SocioActual = item.IdPersona;
+
+                                if (SocioActual != SocioAnterior)
+                                {
+                                    if (SocioAnterior != "")
+                                    {
+                                        @Html.Raw("</tr>")
+                                    }
+
+                                    @Html.Raw("<tr>")
+                                <td style="white-space: nowrap;">@item.Socio</td>
+                                <td>
+                                    @{if (item.Pagado)
+                                        {
+
+                                            <a class="btn btn-success btn-sm" role="button" href="/Independiente/GenerarRecibo/?id=@(item.IdPersona)&iteracion=@item.IdIteracion&modo=@item.PagoEnPesos" style="width: 32px;padding: 3px"><i class="fa fa-check iconOK" aria-hidden="true"></i></a>
+                                            @*<button class="btn btn-success btn-sm" data-id="@item.IdPersona" data-iteracion="@item.IdIteracion" data-pagoEnPesos="@item.PagoEnPesos" onclick="DescargaRecibo(this)"></button>*@
+                                        }
+                                        else
+                                        {
+
+                                            <button class="btn btn-outline-secondary btn-sm" style="width: 32px;padding: 3px;pointer-events: none"> <i class="fa fa-times iconNotOk" aria-hidden="true"></i></button>
+                                        }
+                                    }
+                                </td>
+
+                            }
+                            else
+                            {
+                                <td>
+                                    @{if (item.Pagado)
+                                        {
+                                            <a class="btn btn-success btn-sm" role="button" href="/Independiente/GenerarRecibo/?id=@(item.IdPersona)&iteracion=@item.IdIteracion&modo=@item.PagoEnPesos" style="width: 32px;padding: 3px"><i class="fa fa-check iconOK" aria-hidden="true"></i></a>
+                                            @*<button class="btn btn-danger btn-sm" data-id="@item.IdPersona" data-iteracion="@item.IdIteracion" data-pagoEnPesos="@item.PagoEnPesos" onclick="DescargaRecibo(this)"><i class="fa fa-check iconOk" aria-hidden="true"></i></button>*@
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-outline-secondary btn-sm" style="width: 32px;padding: 3px;pointer-events: none"> <i class="fa fa-times iconNotOk" aria-hidden="true"></i></button>
+                                        }
+                                    }
+                                </td>
+                            }
+                            SocioAnterior = SocioActual;
+
+                        }
+                        @Html.Raw("</tr>")
+
+
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>
+                        No hay pagos ingresados para el ejecicio.
+                    </p>
+                }
+
+        </div>
+    </div>
+
+</div>

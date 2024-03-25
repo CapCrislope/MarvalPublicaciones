@@ -1,0 +1,171 @@
+﻿
+
+@model DistribucionUtilidades.Models.DTO.InformacionSocioDTO
+
+
+@{ string identif = "_ModalInfoSocio";
+    string titulo = "Agregar";
+
+    if (Model.Modo == "EDICION") {
+        titulo = "Editar";
+    }
+}
+
+<div id="Alerts_ModalInfoSocio"></div>
+
+<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">@titulo Socio</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form id="FormInfoSocioMarval" onsubmit="guardarInfoCuentasSocio(); return false;">
+            @Html.HiddenFor(model => model.Modo)
+            @Html.HiddenFor(model => model.IdInfoCuentaSocio)
+
+            @Html.HiddenFor(model => model.PTipoCuenta, new { id = "hIdTipoCuentaPesos" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.DTipoCuenta, new { id = "hIdTipoCuentaDolares" + identif, @class = "" })
+            @Html.HiddenFor(model => model.PIdBanco, new { id = "hBancoPesos" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.DIdBanco, new { id = "hBancoDolares" + identif, @class = "" })
+            @Html.HiddenFor(model => model.IdUsuario, new { id = "hUsuario" + identif, @class = "IncludeHidden" })
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-2">
+                        <label for="ddlUsuario@{@identif}">Usuario</label>
+                        <div id="pnlUsuario@{@identif}">
+                            <select class="demo-default" id="ddlUsuario@{@identif}" name="ddlUsuario@{@identif}" placeholder="Buscar socio..."></select>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.IdUsuario)
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                            <label>Nombre y Apellido</label>
+                            @Html.EditorFor(model => Model.NombreSocio, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => Model.NombreSocio)
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                            <label>CUIT</label>
+                            @Html.EditorFor(model => Model.Cuil, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0" } })
+                            @Html.ValidationMessageFor(model => Model.Cuil)
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div>
+                            <label>Legajo</label>
+                            @Html.EditorFor(model => Model.Legajo, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0" } })
+                            @Html.ValidationMessageFor(model => Model.Legajo)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div>
+                            <label>Email</label>
+                            @Html.EditorFor(model => Model.Email, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => Model.Email)
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div>
+                            <label>Departamento</label>
+                            @Html.EditorFor(model => Model.Departamento, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => Model.Departamento)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Cuenta en Pesos</h5>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="form-group-sm col-md-3">
+                        <label for="ddBancoPesos@{@identif}">Banco</label>
+                        <div id="pnlBancoPesos@{@identif}">
+                            @*<img src="~/Images/loading.gif" />*@
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PIdBanco)
+                    </div>
+
+                    <div class="form-group-sm col-md-3">
+                        <label for="ddIdTipoCuentaPesos@{@identif}">Tipo de Cuenta</label>
+                        <div id="pnlIdTipoCuentaPesos@{@identif}">
+                            @*<img src="~/Images/loading.gif" />*@
+                        </div>
+                        @Html.ValidationMessageFor(model => model.PTipoCuenta)
+                    </div>
+                    <div class="col-md-3">
+                        <div>
+                            <label>Nro de Cuenta</label>
+                            @Html.EditorFor(model => Model.PNroCuenta, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div>
+                            <label>CBU</label>
+                            @Html.EditorFor(model => Model.PCbu, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => Model.PCbu)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>Cuenta en Dolares</h5>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="form-group-sm col-md-3">
+                        <label for="ddBancoDolares@{@identif}">Banco</label>
+                        <div id="pnlBancoDolares@{@identif}">
+                            @*<img src="~/Images/loading.gif" />*@
+                        </div>
+                        @Html.ValidationMessageFor(model => model.DIdBanco)
+                    </div>
+
+                    <div class="form-group-sm col-md-3">
+                        <label for="ddIdTipoCuentaDolares@{@identif}">Tipo de Cuenta</label>
+                        <div id="pnlIdTipoCuentaDolares@{@identif}">
+                            @*<img src="~/Images/loading.gif" />*@
+                        </div>
+                        @*@Html.ValidationMessageFor(model => model.InfoCuentaDolares.TipoCuenta)*@
+                    </div>
+                    <div class="col-md-3">
+                        <div>
+                            <label>Nro de Cuenta</label>
+                            @Html.EditorFor(model => Model.DNroCuenta, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => Model.DNroCuenta)
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div>
+                            <label>CBU</label>
+                            @Html.EditorFor(model => Model.DCbu, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => Model.DCbu)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer mt-3">
+                <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<partial name="_ValidationScriptsPartial" />
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        comboTipoCuenta('@(identif)', 'Pesos', comboTipoCuenta);
+        comboSocios()
+        comboBanco('Pesos',comboBanco)
+    })
+
+</script>

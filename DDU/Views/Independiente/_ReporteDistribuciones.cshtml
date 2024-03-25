@@ -1,0 +1,127 @@
+﻿@model DistribucionUtilidades.Models.VM.ReporteDistribucionVM
+
+@{
+    var totalMesesSocios = new long[Model.ReporteDistribucionDTOs.FirstOrDefault().Meses.Count()];
+    long totalRestanteSocios = 0;
+
+    var totalMesesExSocios = new long[Model.ReporteDistribucionDTOs.FirstOrDefault().Meses.Count()];
+    long totalRestanteExSocios = 0;
+}
+
+<div class="row mb-3">
+
+    <div class="col-md-12">
+        <div>
+            <h3>Reporte de Distribución</h3>
+        </div>
+    </div>
+
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="leyenda">
+            En este módulo, puede visualizar el reporte de las distribuciones.
+        </p>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table id="ImpuestosAcumuladosTable" class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Socio</th>
+                <th scope="col">Saldo Inicial</th>
+                @foreach (var item in Model.ReporteDistribucionDTOs.FirstOrDefault().Meses)
+                {
+                        <th scope="col">@item</th>
+                }
+                <th scope="col">Impuestos <br/> Estimados</th>
+                <th scope="col">Saldo <br /> Restante</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+            @if (Model.ReporteDistribucionDTOs.Count > 0)
+            {
+                foreach (var item in Model.ReporteDistribucionDTOs.Where( x => x.ExSocio == false ))
+                {
+                    totalRestanteSocios += (item.SaldoInicial - (item.ImportePesos.Sum() + item.ImpuestosEstimados));
+                            <tr>
+                                <td>@item.Socio</td>
+                                <td>$ @item.SaldoInicial.ToString( "N0" )</td>
+
+                        @for (int i = 0; i < item.ImportePesos.Count(); i++)
+                        {
+                            totalMesesSocios[i] += item.ImportePesos[i];
+                                        <td>$ @item.ImportePesos[i].ToString( "N0" )</td>
+                        }
+                                <td>$ @item.ImpuestosEstimados.ToString( "N0" )</td>
+                                <td>$ @((item.SaldoInicial - (item.ImportePesos.Sum() + item.ImpuestosEstimados)).ToString( "N0" ))</td>
+                            </tr>
+                }
+                    <tr class="bg-total">
+                        <td>Total Socios</td>
+                        <td>$ @Model.ReporteDistribucionDTOs.Where( x => x.ExSocio == false ).Sum( x => x.SaldoInicial ).ToString( "N0" )</td>
+                    @for (int i = 0; i < Model.ReporteDistribucionDTOs.FirstOrDefault().Meses.Count(); i++)
+                    {
+                                <td>
+                                    $ @totalMesesSocios[i].ToString( "N0" )
+                                </td>
+                    }
+                        <td>$ @Model.ReporteDistribucionDTOs.Where( x => x.ExSocio == false ).Sum( x => x.ImpuestosEstimados ).ToString( "N0" )</td>
+                        <td>$ @totalRestanteSocios.ToString( "N0" )</td>
+                    </tr>
+                foreach (var item in Model.ReporteDistribucionDTOs.Where( x => x.ExSocio == true ))
+                {
+                    totalRestanteExSocios += (item.SaldoInicial - (item.ImportePesos.Sum() + item.ImpuestosEstimados));
+                            <tr>
+                                <td>@item.Socio</td>
+                                <td>$ @item.SaldoInicial.ToString( "N0" )</td>
+
+                        @for (int i = 0; i < item.ImportePesos.Count(); i++)
+                        {
+                            totalMesesExSocios[i] += item.ImportePesos[i];
+                                        <td>$ @item.ImportePesos[i].ToString( "N0" )</td>
+                        }
+                                <td>$ @item.ImpuestosEstimados.ToString( "N0" )</td>
+                                <td>$ @((item.SaldoInicial - (item.ImportePesos.Sum() + item.ImpuestosEstimados)).ToString( "N0" ))</td>
+                            </tr>
+                }
+                    <tr class="bg-total">
+                        <td>Total ExSocios</td>
+                        <td>$ @Model.ReporteDistribucionDTOs.Where( x => x.ExSocio == true ).Sum( x => x.SaldoInicial ).ToString( "N0" )</td>
+                    @for (int i = 0; i < Model.ReporteDistribucionDTOs.FirstOrDefault().Meses.Count(); i++)
+                    {
+                                <td>
+                                    $ @totalMesesExSocios[i].ToString( "N0" )
+                                </td>
+                    }
+                        <td>$ @Model.ReporteDistribucionDTOs.Where( x => x.ExSocio == true ).Sum( x => x.ImpuestosEstimados ).ToString( "N0" )</td>
+                        <td>$ @totalRestanteExSocios.ToString( "N0" )</td>
+                    </tr>
+                    <tr class="bg-total">
+                        <td>TOTAL</td>
+                        <td>$ @Model.ReporteDistribucionDTOs.Sum( x => x.SaldoInicial ).ToString( "N0" )</td>
+                    @for (int i = 0; i < Model.ReporteDistribucionDTOs.FirstOrDefault().Meses.Count(); i++)
+                    {
+                                <td>
+                                    $ @((totalMesesExSocios[i] + totalMesesSocios[i]).ToString( "N0" ))
+                                </td>
+                    }
+                        <td>$ @Model.ReporteDistribucionDTOs.Sum( x => x.ImpuestosEstimados ).ToString( "N0" )</td>
+                        <td>$ @((totalRestanteExSocios + totalRestanteSocios).ToString( "N0" ))</td>
+                    </tr>
+            }
+
+        </tbody>
+    </table>
+
+    <br />
+
+<div style="display:flex;justify-content:end">
+    <button type="button" class="btn btn-primary btn-sm" id ="exportarBtn" onclick = "exportarExcel();">Descargar Excel</button>
+</div>
+
+</div>

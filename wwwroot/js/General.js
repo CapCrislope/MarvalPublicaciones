@@ -24,6 +24,7 @@ function HandlerLanguage() {
     $(this).addClass("active-lang");
     Cookies.set('LangForMarval', lang);
     setNewLanguage(lang);
+
     location.reload(true);
   });
 }
@@ -445,55 +446,53 @@ function BuscadorPodcasts(palabras) {
 
 function setNewLanguage(lang) {
 
+    //var path = window.location.href;
+    //let inicioLang = path.indexOf("lang=") == -1 ? undefined : path.indexOf("lang=");
+    //let finLang = path.lastIndexOf("lang=") + 7 == 6 ? undefined : path.lastIndexOf("lang=") + 7; 
+
+    //let newPath = path;
+
+    //if (inicioLang != undefined
+    //    && finLang != undefined) {
+    //    newPath = path.substring(0, inicioLang);
+    //    //newPath += path.substring(finLang);
+    //}
+
+    //let ultimaLinea = newPath[newPath.length - 1];
+
+    //if (ultimaLinea == "/" || ultimaLinea == "&") {
+    //    newPath += "lang=" + lang;
+    //} else {
+    //    newPath += "&lang=" + lang;
+    //}
+
+    //window.location.href = newPath;
+
+  //Comprobamos que no estamos en Home
+  if (window.location.pathname != "/") {
+    //Agregamos el idioma al path
     var path = window.location.href;
-    let inicioLang = path.indexOf("lang=") == -1 ? undefined : path.indexOf("lang=");
-    let finLang = path.lastIndexOf("lang=") + 7 == 6 ? undefined : path.lastIndexOf("lang=") + 7; 
+    var langPosition = path.lastIndexOf("lang") + 6;
+    var hasLang = path.substring(langPosition - 1);
+    var newLocation = path;
 
-    let newPath = path;
-
-    if (inicioLang != undefined
-        && finLang != undefined) {
-        newPath = path.substring(0, inicioLang);
-        //newPath += path.substring(finLang);
-    }
-
-    let ultimaLinea = newPath[newPath.length - 1];
-
-    if (ultimaLinea == "/" || ultimaLinea == "&") {
-        newPath += "lang=" + lang;
+    if (hasLang == "es" || hasLang == "en") {
+      newLocation = path.replace("lang=" + hasLang, "lang=" + lang);
     } else {
-        newPath += "&lang=" + lang;
+      if (newLocation.substring(newLocation.length - 1) == '/')
+        newLocation = newLocation.substring(0, newLocation.length - 1);
+
+      var anclaPosition = path.lastIndexOf("#");
+      if (anclaPosition > -1)
+        newLocation = newLocation.substring(0, anclaPosition);
+
+      newLocation += "&lang=" + lang;
     }
-
-    window.location.href = newPath;
-
-
-
-  ////Comprobamos que no estamos en Home
-  //if (window.location.pathname != "/") {
-  //  //Agregamos el idioma al path
-  //  var path = window.location.href;
-  //  var langPosition = path.lastIndexOf("lang") + 6;
-  //  var hasLang = path.substring(langPosition - 1);
-  //  var newLocation = path;
-
-  //  if (hasLang == "es" || hasLang == "en") {
-  //    newLocation = path.replace("lang=" + hasLang, "lang=" + lang);
-  //  } else {
-  //    if (newLocation.substring(newLocation.length - 1) == '/')
-  //      newLocation = newLocation.substring(0, newLocation.length - 1);
-
-  //    var anclaPosition = path.lastIndexOf("#");
-  //    if (anclaPosition > -1)
-  //      newLocation = newLocation.substring(0, anclaPosition);
-
-  //    newLocation += "&lang=" + lang;
-  //  }
-  //  window.history.pushState({ idioma: lang }, "idioma", newLocation);
-  //} else {
-  //  var newLocation = window.location.href + "lang=" + lang;
-  //  window.history.pushState({ idioma: lang }, "idioma", newLocation);
-  //}
+    window.history.pushState({ idioma: lang }, "idioma", newLocation);
+  } else {
+    var newLocation = window.location.href + "lang=" + lang;
+    window.history.pushState({ idioma: lang }, "idioma", newLocation);
+  }
 
 }
 

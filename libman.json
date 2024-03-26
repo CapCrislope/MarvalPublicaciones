@@ -3,8 +3,9 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "font-awesome@5.11.2",
-      "destination": "wwwroot/lib/font-awesome/"
+      "provider": "unpkg",
+      "library": "yt-player@3.6.1",
+      "destination": "wwwroot/lib/yt-player/"
     }
   ]
 }

@@ -1,6 +1,7 @@
 ﻿//Biblioteca para Utilizar los DropDownList con el componente de Selectize
-//v12.0
+//v13.0
 
+//v13.0 - Se agrega la función focus y blur para poder llamar de afuera a un método luego del evento onfocus y onblur del combo.
 //v12.0 - Se agregó la opción de create para basic combo.
 //		- Se parametrizó el texto que se muestra al crear un nuevo item con el option: CreateName
 //v11.0 - Se agregó tipos de filtro (ComboBy) y tipos de combo disponibles (ComboType)
@@ -97,6 +98,8 @@ var ComboType = {
                 comboBy: ComboBy.Base, //define los datos que va a poseer el combo (Enum ComboBy)
                 comboType: ComboType.Basic, //define el tipo de combo (Basic o BasicS)
                 createName: 'Buscar', //Setea el texto que aparece para crear una nueva opción.
+                //focus: null, //Función que se llama luego de onfocus
+                //blur: null, //Función que se llama luego de onblur
             },
 
             init: function () {
@@ -137,7 +140,7 @@ var ComboType = {
                     },
                     function (response, status, xhr) {
                         if (status == "success") {
-                            //;
+                            //debugger;
                             var arrLikeNombres = [];
                             var $select = $('#ddl' + opt.name + opt.view).selectize({
                                 plugins: ['remove_button', 'enter_key'],
@@ -169,6 +172,7 @@ var ComboType = {
                                         opt.cascadeCombo();
                                     if (opt.change)
                                         opt.change();
+                                    //scroll.start();
                                 },
                                 onOptionAdd: function (value, data) {
                                     if (isNaN(value) && opt.create)
@@ -184,8 +188,14 @@ var ComboType = {
                                         return '<div class="create">' + opt.createName + ' <strong>' + escape(data.input) + '</strong>&hellip;</div>';
                                     }
                                 }
+                                //onFocus: function (value) {
+                                //    scroll.stop();
+                                //},
+                                //onBlur: function (value, dest) {
+                                //    scroll.start();
+                                //}
                             });
-                            //;
+                            //debugger;
                             $select[0].selectize.clear(true);
                             if (opt.removeValue)
                                 $select[0].selectize.removeOption(opt.removeValue);
@@ -245,7 +255,7 @@ var ComboType = {
                     sortField: [{ field: opt.labelField, direction: 'asc' }, { field: '$score' }],
                     options: [],
                     onChange: function (value) {
-                        ;
+                        debugger;
                         var arr = [];
                         if (value != null) {
                             if ($.isArray(value)) {

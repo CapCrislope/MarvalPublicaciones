@@ -1,0 +1,37 @@
+﻿@model BackendPortal.Models.VM.TabVariosPerfilDeEstudioVM
+<div class="panel-body">
+    <form id="PerfilDeEstudioForm" onsubmit="GuardarTabPerfilDeEstudio(); return false;">
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="company_profile_es">Perfil de estudio (es)</label>
+                    @Html.TextAreaFor(model => model.perfilDeEstudioDTO.company_profile_es, new { @id = "company_profile_es", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.perfilDeEstudioDTO.company_profile_es)
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="company_profile_en">Perfil de estudio (en)</label>
+                    @Html.TextAreaFor(model => model.perfilDeEstudioDTO.company_profile_en, new { @id = "company_profile_en", @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                    @Html.ValidationMessageFor(model => model.perfilDeEstudioDTO.company_profile_en)
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:right;float:right;">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+    </form>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("company_profile_es");
+        InicializarCKEDITOR("company_profile_en");
+    });
+</script>

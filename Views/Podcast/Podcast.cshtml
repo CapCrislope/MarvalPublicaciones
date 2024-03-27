@@ -1,0 +1,66 @@
+﻿@model BackendPortal.Models.VM.PodcastVM
+
+@{
+    ViewBag.Title = "Podcast";
+}
+
+<div id="AlertsPodcast">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10 izq">
+                <h2>Podcasts</h2>
+            </div>
+            <div class="col-md-2 der">
+                <button type="button" class="btn btn-primary" onclick="AltaPodcast(); return false;">Nuevo Podcast</button>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12">
+                <table id="TablaPodcast" class="display compact">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Título</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hIdPodcast" />
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+@Scripts.Render("~/Scripts/combos.js")
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@Scripts.Render("~/bundles/datepicker")
+@Styles.Render("~/Content/datepicker")
+
+@Scripts.Render("~/Scripts/DataTables/dataTables.buttons.min.js")
+@Styles.Render("~/Content/DataTables/css/buttons.dataTables.min.css")
+
+@Scripts.Render("~/Scripts/DataTables/jszip.min.js")
+
+@Scripts.Render("~/bundles/Podcast")
+
+@*<input type="hidden" id="hIdPodcast" />*@
+
+<script>
+    var base_web_url = "@System.Configuration.ConfigurationManager.AppSettings["WEB_Podcasts"]";
+
+    $(document).ready(function () {
+        InicializarDatePickers();
+        ;
+        IniciarTablaPodcast();
+    });
+</script>

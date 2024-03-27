@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<!-- saved from url=(0016)http://localhost --> 
+<html lang="es-ES">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend Portal - @ViewBag.Title</title>
+    @Html.MetaAcceptLanguage()
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+
+</head>
+<body>
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @Scripts.Render("~/bundles/Pnotify")
+    @Styles.Render("~/Content/Pnotify")
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

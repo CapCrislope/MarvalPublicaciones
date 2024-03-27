@@ -1,0 +1,76 @@
+﻿@model BackendPortal.Models.Q.QRanking
+
+@{
+    string identif = "Reconocimientos";
+
+    string[] busquedasCombos = new string[]
+     {
+        "Areas",
+        "fechaDesde",
+        "fechaHasta",
+     };
+}
+
+<form id="formBusquedaRanking">
+    <input id="h@(busquedasCombos[0] + identif)" name="areas" type="hidden" value="" />
+    <input id="h@(busquedasCombos[1] + identif)" name="fechaDesde" type="hidden" value="" />
+    <input id="h@(busquedasCombos[2] + identif)" name="fechaHasta" type="hidden" value="" />
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Áreas</label>
+                <div id="pnl@(busquedasCombos[0] + identif)">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Año Desde</label>
+                <div id="pnl@(busquedasCombos[1] + identif)">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Año Hasta</label>
+                <div id="pnl@(busquedasCombos[2] + identif)">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.CheckBoxFor(model => model.Diversidad)
+                @Html.LabelFor(model => model.Diversidad)
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="margin-top:17px;">
+            <center>
+                <div>
+                    <button type="button" class="btn btn-default" onclick="LimpiarFormBusquedaRanking();">Limpiar</button>
+                    <button id="btnForm" type="button" class="btn btn-primary" onclick="BuscarRanking(); return false;">Buscar</button>
+                </div>
+            </center>
+        </div>
+    </div>
+</form>
+
+@Scripts.Render("~/bundles/Selectize")
+@Scripts.Render("~/bundles/combos")
+@Scripts.Render("~/bundles/Busqueda")
+@Scripts.Render("~/bundles/jqueryval")
+
+@Styles.Render("~/Content/Selectize")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        IniciarCombosBusqueda();
+    })
+</script>

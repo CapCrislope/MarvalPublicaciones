@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Profesionales";
+}
+
+<div id="AlertsProfesional">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10 izq">
+                <h2>Profesionales</h2>
+            </div>
+            <div class="col-md-2 der">
+                <button type="button" class="btn btn-primary" onclick="AltaProfesional();">Nuevo Profesional</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="TablaProfesional" class="display compact">
+                    <thead>
+                        <tr>
+                            <th>Orden</th>
+                            <th>Iniciales</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Rol</th>
+                            <th></th>
+                            <th>Habilitado</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hIdProfesional" />
+
+@Scripts.Render("~/bundles/Profesional")
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+@Scripts.Render("~/Scripts/combos.js")
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@Scripts.Render("~/Scripts/DataTables/dataTables.buttons.min.js")
+@Styles.Render("~/Content/DataTables/css/buttons.dataTables.min.css")
+
+@Scripts.Render("~/Scripts/DataTables/jszip.min.js")
+@Scripts.Render("~/Scripts/DataTables/buttons.html5.min.js")
+@Scripts.Render("~/Scripts/DataTables/buttons.flash.min.js")
+
+<script>
+    $(document).ready(function () {
+        IniciarTablaProfesional();
+    });
+</script>

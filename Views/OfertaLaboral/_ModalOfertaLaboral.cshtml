@@ -1,0 +1,108 @@
+﻿
+@model BackendPortal.Models.VM.OfertaLaboralVM
+
+@{ string identif = "Modal"; }
+
+<div id="AlertsModal">
+</div>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="OfertaLaboralForm" onsubmit="GuardarOfertaLaboral(); return false;">
+            @Html.HiddenFor(model => model.Modo)
+            @Html.HiddenFor(model => model.Titulo)
+            @Html.HiddenFor(model => model.OfertaLaboral.IdOferta)
+           
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Model.Titulo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label>Fecha Alta *</label>
+                            <div class="input-group date">
+                                @Html.EditorFor(model => model.OfertaLaboral.FechaAlta, new { htmlAttributes = new { @class = "form-control input-sm", id = "FechaAlta"  } })
+                                <div class="input-group-addon input-sm dtp-sm">
+                                    <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.OfertaLaboral.FechaAlta)
+
+                        </div>
+                        <div class="col-md-6">
+                            <label>Fecha baja</label>
+                            <div class="input-group date">
+                                @Html.EditorFor(model => model.OfertaLaboral.FechaBaja, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                <div class="input-group-addon input-sm dtp-sm">
+                                    <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div style="margin-top:20px;">
+                                <label>Titulo (ES)*</label>
+                                @Html.EditorFor(model => model.OfertaLaboral.Titulo_ES, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                @Html.ValidationMessageFor(model => model.OfertaLaboral.Titulo_ES)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Descripcion (ES)*</label>
+                        @Html.TextAreaFor(model => model.OfertaLaboral.Descripcion_ES, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        @Html.ValidationMessageFor(model => model.OfertaLaboral.Descripcion_ES)
+                    </div>
+
+                </div>
+
+                <div class="row">
+                   
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div style="margin-top:20px;">
+                                <label>Titulo (EN)*</label>
+                                @Html.EditorFor(model => model.OfertaLaboral.Titulo_EN, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                @Html.ValidationMessageFor(model => model.OfertaLaboral.Titulo_EN)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <label>Descripcion (EN)*</label>
+                        @Html.TextAreaFor(model => model.OfertaLaboral.Descripcion_EN, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        @Html.ValidationMessageFor(model => model.OfertaLaboral.Descripcion_EN)
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/datepicker")
+
+@Styles.Render("~/Content/datepicker")
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+<script>
+    $(document).ready(function () {
+        InicializarDatePickers();
+        InicializarCKEDITOR("OfertaLaboral_Descripcion_ES");
+        InicializarCKEDITOR("OfertaLaboral_Descripcion_EN");
+       
+    });
+</script>

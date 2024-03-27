@@ -1,26 +1,25 @@
-@using DistribucionUtilidades.Models;
-@using Newtonsoft.Json;
+﻿@using BackendPortal.Models;
 @model IEnumerable<string>
 
 
 @{
     var alerts = TempData.ContainsKey(Alert.TempDataKey)
-    ? JsonConvert.DeserializeObject<List<Alert>>(TempData[Alert.TempDataKey] as string)
-    : new List<Alert>();
+                ? (List<Alert>)TempData[Alert.TempDataKey]
+                : new List<Alert>();
 
     foreach (var alert in alerts)
     {
         if (Model.Contains(alert.KeyName))
         {
             @*<div class="alert alert-@alert.AlertStyle alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    @Html.Raw(alert.Message)
-                </div>*@
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                @Html.Raw(alert.Message)
+            </div>*@
             <script type="text/javascript">
             new PNotify({
                 text: '@Html.Raw(alert.Message)',
                 type: '@alert.AlertStyle',
-                styling: 'fontawesome'
+                styling: 'bootstrap3'
             });
             </script>
         }

@@ -1,0 +1,159 @@
+﻿@model BackendPortal.Models.VM.RankingVM
+
+@{ 
+    ViewBag.Title = "";
+
+    string identif = "ModalReconocimientos";
+    string comboAreas = "Areas";
+
+    string urlImage = System.Configuration.ConfigurationManager.AppSettings["DIR_PREMIOS_URL"] + Model.Ranking.Image;
+}
+
+<form id="frm@(identif)" enctype="multipart/form-data">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">@Model.Titulo</h3>
+            </div>
+            <div class="modal-body">
+
+                @* Hiddens *@
+                @Html.HiddenFor(r => r.Ranking.Areas, new { id = "h" + comboAreas + identif })
+                @Html.HiddenFor(r => r.Ranking.Id, new { id = "hId" + identif })
+                @Html.HiddenFor(r => r.Modo, new { id = "hModo" + identif })
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="row">
+                            <div class="col-md-5 col-sm-5">
+                                @* Aqui la Imagen Con Un Preview *@
+                                <div class="contenedorFoto">
+                                    <label>Imagen</label>
+                                    <center>
+                                        <div>
+                                            @if (!String.IsNullOrEmpty(Model.Ranking.Image) && BackendPortal.Controllers.BaseController.ExisteUrl(urlImage))
+                                            {
+                                                <img id="imgPicture" src="@urlImage" title="@Model.Ranking.Title_Es" class="imgFoto" />
+                                            }
+                                            else
+                                            {
+                                                <img id="imgPicture" src="~/Images/imgNoDisp.png" title="Imagen no disponible" class="imgFoto" />
+                                            }
+                                        </div>
+                                    </center>
+                                    <div class="row">
+                                        <div class="col-md-9">
+                                            <div class="input-group">
+                                                @* Aqui Input Que Contendra el nombre Del Archivo *@
+                                                @Html.EditorFor(p => p.Ranking.Image, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filenamePicture", name = "", @readonly = "readonly" } })
+                                                <span class="input-group-btn">
+                                                    <span class="btn btn-default btn-file btn-sm">
+                                                        Buscar...
+                                                        @* Aqui Archivo a Upload *@
+                                                        @Html.TextBoxFor(p => p.Ranking.ImageUpload, new { type = "file", id = "inputFilePicture", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFilePicture');readURL(this, 'imgPicture');" })
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" class="btn btn-sm btn-default" onclick="BorrarImagenPremio();">Limpiar</button>
+                                        </div>
+
+                                    </div>
+                                    <div id="MjeErrorImagen" class="hidden" style="margin-top:10px;">
+                                        <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <label>Orden *</label>
+                                        @Html.EditorFor(r => r.Ranking.Order, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                        @Html.ValidationMessageFor(r => r.Ranking.Order)
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <label>Año *</label>
+                                        @Html.EditorFor(r => r.Ranking.Year, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                        @Html.ValidationMessageFor(r => r.Ranking.Year)
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:20px;">
+                                    <div class="col-md-12 col-sm-12">
+                                        <label>Áreas</label>
+                                        <div id="pnl@( comboAreas + identif )">
+                                            @* CARGA DE COMBO AREAS AQUI. SELECCION MULTIPLE TRAE LOS QUE YA ESTAN SELECCIONADOS *@
+                                        </div>
+                                    </div>
+                                </div> 
+                                <div class="row">
+                                    <div class="col-md-6" style="margin-top: 20px;">
+                                        <label>
+                                            Diversidad
+                                            @Html.CheckBoxFor(model => model.Ranking.Diversidad)
+
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-5">
+                                <label>Título (Es) *</label>
+                                @Html.EditorFor(r => r.Ranking.Title_Es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                @Html.ValidationMessageFor(r => r.Ranking.Title_Es)
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-12">
+                                <label>Descripción (Es)</label>
+                                @Html.TextAreaFor(r => r.Ranking.Description_Es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-5">
+                                <label>Tìtulo (En) *</label>
+                                @Html.EditorFor(r => r.Ranking.Title_En, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                @Html.ValidationMessageFor(r => r.Ranking.Title_En)
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="col-md-12">
+                                    <label>Descripción (En)</label>
+                                    @Html.TextAreaFor(r => r.Ranking.Description_En, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-primary" type="submit">Guardar</button>
+                </div>
+            </div>
+        </div>
+</form>
+
+<div id="Alerts@(identif)">
+
+</div>
+
+@Scripts.Render("~/bundles/ModalRanking")
+@Scripts.Render("~/bundles/jqueryval")
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        ;
+        CargarComboAreasModal();
+
+        InicializarCKEDITOR("Ranking_Description_Es");
+        InicializarCKEDITOR("Ranking_Description_En");
+
+        if ($("#hModo@(identif)").val() == "ALTA") {
+            $("#frm@(identif)").off('submit').on('submit', function () { GuardarDatos(AltaRankingModal); return false; });
+        } else {
+            $("#frm@(identif)").off('submit').on('submit', function () { GuardarDatos(ModificarRanking); return false; });
+        }
+    });
+</script>

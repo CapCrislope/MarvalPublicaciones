@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "OfertaLaboral";
+}
+
+
+<div id="AlertsOfertaLaboral">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row" style="margin-bottom:20px;">
+            <div class="col-md-10 izq">
+                <h2>Ofertas Laborales</h2>
+            </div>
+            <div class="col-md-2 der">
+                <button type="button" class="btn btn-primary" onclick="AltaOfertaLaboral();">Nueva Oferta</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="OfertaLabTable" class="display compact">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="idOferta" />
+</div>
+
+
+@Scripts.Render("~/bundles/OfertaLaboral")
+
+
+@Scripts.Render("~/bundles/jqueryval")
+
+
+
+@Scripts.Render("~/Scripts/DataTables/dataTables.buttons.min.js")
+@Styles.Render("~/Content/DataTables/css/buttons.dataTables.min.css")
+
+@Scripts.Render("~/Scripts/DataTables/jszip.min.js")
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        IniciarTablaOfertasLaborales();
+    })
+
+</script>

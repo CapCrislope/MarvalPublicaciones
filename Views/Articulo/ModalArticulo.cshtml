@@ -1,0 +1,259 @@
+﻿@model BackendPortal.Models.VM.ArticuloVM
+
+@{
+    string identif = "Modal";
+    string rutaImg = @System.Configuration.ConfigurationManager.AppSettings["DIR_REPOSITORIO_URL"] + @"Articulos\" + Model.articulo.picture;
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="ArticuloForm" onsubmit="GuardarArticulo(); return false;" enctype="multipart/form-data">
+            @Html.HiddenFor(model => model.modo)
+            @Html.HiddenFor(model => model.titulo)
+            @Html.HiddenFor(model => model.articulo.featured)
+            @Html.HiddenFor(model => model.articulo.priorizar)
+            @Html.HiddenFor(model => model.articulo.id)
+            @Html.HiddenFor(model => model.articulo.AreasPracticas, new { id = "hAreasPracticas" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.articulo.Autores, new { id = "hAutores" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.articulo.Tags, new { id = "hTags" + identif })
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Model.titulo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="contenedorFoto">
+                                <label>Imagen</label>
+                                <center>
+                                    <div style="margin-top:10px;">
+                                        @if (!string.IsNullOrEmpty(Model.articulo.picture) && BackendPortal.Controllers.BaseController.ExisteUrl(rutaImg))
+                                        {
+                                            <img id="imgPicture" src="@{@rutaImg}" title="@{@Model.articulo.picture_description}" class="imgFoto" />
+                                        }
+                                        else
+                                        {
+                                            <img id="imgPicture" src="~/Images/imgNoDisp.png" title="Imagen no disponible" class="imgFoto" />
+                                        }
+                                    </div>
+                                </center>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.articulo.picture, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filenamePicture", name = "", @readonly = "readonly" } })
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-default btn-file btn-sm">
+                                                    Buscar…
+                                                    @Html.TextBoxFor(model => model.articulo.PictureUpload, new { type = "file", id = "inputFilePicture", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFilePicture');readURL(this, 'imgPicture');" })
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div id="divFormatoFotoIncorrecto" class="hidden" style="margin-top:10px;">
+                                            <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.articulo.picture)
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-sm btn-default" onclick="BorrarPictureArticulo();">Limpiar</button>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <label>Descripción</label>
+                                        @Html.EditorFor(model => model.articulo.picture_description, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                                        @Html.ValidationMessageFor(model => model.articulo.picture_description)
+                                    </div>
+                                    <div class="col-md-3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                @Html.HiddenFor(model => model.articulo.ImagenPosY, new { id = "hImagenPosY" + identif, @class = "IncludeHidden" })
+
+                                <div class="form-group">
+                                    <label for="ddlImagenPosY@{@identif}">Posicion imagen</label>
+                                    <div id="pnlImagenPosY@{@identif}"></div>
+                                    @Html.ValidationMessageFor(model => model.articulo.ImagenPosY)
+                                </div>
+                            </div>
+
+                            <div>
+                                <label>Fecha de Publicación</label>
+                                <div class="input-group date">
+                                    @Html.EditorFor(model => model.articulo.pub_date, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                                    <div class="input-group-addon input-sm dtp-sm">
+                                        <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.articulo.pub_date)
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Áreas de Práctica</label>
+                                <div id="pnlAreasPracticas@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Autores</label>
+                                <div id="pnlAutores@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                                @Html.ValidationMessageFor(model => model.articulo.Autores)
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Destacado</label>
+                                @if (Model.articulo.featured == 1)
+                                {
+                                    <input type="checkbox" id="Destacado" checked="checked" />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" id="Destacado" />
+                                }
+                            </div>
+                            <div>
+                                <label>Priorizar destacado</label>
+                                @{
+                                    if (Model.articulo.priorizar == 1)
+                                    {
+                                        <input type="checkbox" id="Priorizar" checked="checked" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" id="Priorizar" />
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:25px;">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (es) *</label>
+                            @Html.EditorFor(model => model.articulo.title_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.articulo.title_es)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Copete (es)</label>
+                            @Html.TextAreaFor(model => model.articulo.header_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Contenido (es)</label>
+                            @Html.TextAreaFor(model => model.articulo.content_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4" style="margin-top:10px;">
+                            <label>Meta Título (es)</label>
+                            @Html.EditorFor(model => model.articulo.meta_title_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.articulo.meta_title_es)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Meta Descripción (es)</label>
+                            @Html.TextAreaFor(model => model.articulo.meta_description_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (en) *</label>
+                            @Html.EditorFor(model => model.articulo.title_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.articulo.title_en)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Copete (en)</label>
+                            @Html.TextAreaFor(model => model.articulo.header_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Contenido (en)</label>
+                            @Html.TextAreaFor(model => model.articulo.content_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4" style="margin-top:10px;">
+                            <label>Meta Título (en)</label>
+                            @Html.EditorFor(model => model.articulo.meta_title_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.articulo.meta_title_en)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Meta Descripción (en)</label>
+                            @Html.TextAreaFor(model => model.articulo.meta_description_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-6">
+                            <label>Etiquetas</label>
+                            <div id="pnlTags@{@identif}">
+                                <img src="~/Images/loading.gif" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Nombre (es)</label>
+                            <input type="text" name="tag_es" id="tag_es" class="form-control wmax input-sm" style="margin-bottom: 10px;" />
+                            <label>Nombre (en)</label>
+                            <input type="text" name="tag_en" id="tag_en" class="form-control wmax input-sm" style="margin-bottom: 10px;" />
+                            <div id="divTagValidation" style="margin-top:10px;margin-bottom:15px;display:none;">
+                                <span class="field-validation-error"></span>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick="CrearTag();">Crear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="AlertsModal">
+</div>
+<div id="AlertsCombo">
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+
+
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("articulo_header_en");
+        InicializarCKEDITOR("articulo_content_en");
+        InicializarCKEDITOR("articulo_meta_description_en");
+        InicializarCKEDITOR("articulo_header_es");
+        InicializarCKEDITOR("articulo_content_es");
+        InicializarCKEDITOR("articulo_meta_description_es");
+        InicializarDatePickers();
+    });
+</script>

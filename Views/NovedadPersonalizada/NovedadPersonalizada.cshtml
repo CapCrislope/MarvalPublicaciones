@@ -1,0 +1,134 @@
+﻿@model BackendPortal.Models.VM.BusquedaVM
+
+@{
+    ViewBag.Title = "Novedad Personalizada";
+    string identif = "NovedadPersonalizada";
+}
+
+<div id="AlertsNovedadPersonalizada">
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-10 izq">
+                <h2>Novedad Personalizada</h2>
+            </div>
+            <div class="col-md-2 der">
+                <button type="button" class="btn btn-primary" onclick="AltaNovedadPersonalizada();">Nueva Novedad</button>
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-default btn-sm desplegableFiltros" onclick="FiltrosBusquedaNovedadPersonalizada();">
+                Búsqueda&nbsp;<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="filtrosBusquedaNovedadPersonalizada" style="margin-top:20px; display:none;" class="panel panel-default">
+            <div class="panel-body">
+                <form id="BusquedaNovedadPersonalizadaForm">
+                    @Html.HiddenFor(model => model.busqueda.AreaPractica, new { id = "hAreaPractica" + identif, @class = "IncludeHidden" })
+                    @Html.HiddenFor(model => model.busqueda.Autor, new { id = "hAutor" + identif, @class = "IncludeHidden" })
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ddlAutor@{@identif}">Autores</label>
+                                <div id="pnlAutor@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ddlAreaPractica@{@identif}">Áreas Prácticas</label>
+                                <div id="pnlAreaPractica@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Texto</label>
+                            @Html.EditorFor(model => model.busqueda.Texto, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.busqueda.Texto)
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Fecha Publicación</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="input-group date">
+                                        @Html.EditorFor(model => model.busqueda.FechaDesde, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly", placeholder = "Desde" } })
+                                        <div class="input-group-addon input-sm dtp-sm">
+                                            <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="text-align:center; margin-top:5px;"><label>&mdash;</label></div>
+                                <div class="col-md-5">
+                                    <div class="input-group date">
+                                        @Html.EditorFor(model => model.busqueda.FechaHasta, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly", placeholder = "Hasta" } })
+                                        <div class="input-group-addon input-sm dtp-sm">
+                                            <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                        <div class="col-md-4 der" style="margin-top:17px;">
+                            <button type="button" class="btn btn-default" onclick="LimpiarFormBusquedaNovedadPersonalizada();">Limpiar</button>
+                            <button type="button" class="btn btn-primary" onclick="BuscarNovedadPersonalizada();">Buscar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12">
+                <table id="TablaNovedadPersonalizada" class="display compact">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Copete</th>
+                            <th>Fecha</th>
+                            <th>Link</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hIdNovedadPersonalizada" />
+
+@Scripts.Render("~/bundles/NovedadPersonalizada")
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+@Scripts.Render("~/Scripts/combos.js")
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@Scripts.Render("~/bundles/datepicker")
+@Styles.Render("~/Content/datepicker")
+
+@Scripts.Render("~/Scripts/DataTables/dataTables.buttons.min.js")
+@Styles.Render("~/Content/DataTables/css/buttons.dataTables.min.css")
+
+@Scripts.Render("~/Scripts/DataTables/jszip.min.js")
+
+<script>
+    $(document).ready(function () {
+        InicializarDatePickers();
+        IniciarCombosHomeNovedadPersonalizada();
+        IniciarTablaNovedadPersonalizada();
+    });
+</script>

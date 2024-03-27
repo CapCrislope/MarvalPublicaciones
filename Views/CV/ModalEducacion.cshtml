@@ -1,0 +1,95 @@
+﻿@model BackendPortal.Models.VM.CVEducacionVM
+
+<div class="modal-body">
+    <div class="form-group">
+        <div>
+            <button type="button" class="btn btn-default btn-sm desplegable" onclick="SlideDesplegable('panelFormEducacion');">
+                Educacion&nbsp;<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div id="panelFormEducacion" style="margin-top:20px; display:none;" class="panel panel-default">
+            <div class="panel-body">
+                <form id="EducacionForm">
+                    @Html.HiddenFor(model => model.educacion.id)
+                    @Html.HiddenFor(model => model.educacion.cv_id)
+                    @Html.HiddenFor(model => model.modo)
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Institución *</label>
+                            @Html.EditorFor(model => model.educacion.institute, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.educacion.institute)
+                        </div>
+                        <div class="col-md-4">
+                            <label>Título *</label>
+                            @Html.EditorFor(model => model.educacion.title, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.educacion.title)
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Fecha</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="input-group date">
+                                        @Html.EditorFor(model => model.educacion.entry_date, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly", placeholder = "Inicio" } })
+                                        <div class="input-group-addon input-sm dtp-sm">
+                                            <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2" style="text-align:center; margin-top:5px;"><label>&mdash;</label></div>
+                                <div class="col-md-5">
+                                    <div class="input-group date">
+                                        @Html.EditorFor(model => model.educacion.end_date, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly", placeholder = "Fin" } })
+                                        <div class="input-group-addon input-sm dtp-sm">
+                                            <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="margin-left:15px; margin-top:30px;">
+                                    @Html.ValidationMessageFor(model => model.educacion.entry_date)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:20px;">
+                        <label>Descripción</label>
+                        @Html.TextAreaFor(model => model.educacion.comments, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 100px" })
+                    </div>
+                    <div class="der" style="margin-top:35px; margin-right:0px;">
+                        <button type="button" class="btn btn-default hidden" id="btnCancelarEdicion" onclick="LimpiarFormEducacion()">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="GuardarEducacion();">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px;">
+            <div class="col-md-12">
+                <table id="TablaEducacion" class="display compact">
+                    <thead>
+                        <tr>
+                            <th>Período</th>
+                            <th>Empresa</th>
+                            <th>Cargo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(document).ready(function () {
+        $("#TituloModal").text("Educacion");
+        InicializarDatePickers();
+        IniciarTablaEducacion();
+    });
+</script>
+

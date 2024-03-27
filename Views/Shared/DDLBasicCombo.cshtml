@@ -1,4 +1,4 @@
-@model DistribucionUtilidades.Models.VM.BasicVM
+﻿@model BackendPortal.Models.VM.BasicVM
 
 <select class="demo-default" id="@Model.nombre" name="@Model.nombre" placeholder="@Model.placeholder">
     @foreach (var item in Model.iLista)
@@ -7,8 +7,8 @@
         {
             <option value='@item.Descripcion'>@item.Descripcion</option>
         }
-        else
-        {
+        else 
+        { 
             <option value='@item.Id'>@item.Descripcion</option>
         }
     }

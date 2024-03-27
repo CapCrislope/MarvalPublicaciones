@@ -1,0 +1,142 @@
+﻿@model BackendPortal.Models.VM.EventoContenidoExtraVM
+
+@{
+    string rutaImg = @System.Configuration.ConfigurationManager.AppSettings["DIR_EVENTO_URL"] + Model.EventoContenidoExtra.Id + "/" + Model.EventoContenidoExtra.ArchivoImagen;
+}
+<div id="AlertsModal">
+</div>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Contenido</h4>
+        </div>
+
+        <div class="modal-body">
+
+            <form id="formContenidoExtra" onsubmit="GuardarContenidoExtra(); return false;">
+
+                @Html.HiddenFor(model => model.EventoContenidoExtra.TipoContenido)
+                @Html.HiddenFor(model => model.EventoContenidoExtra.Id)
+                @Html.HiddenFor(model => model.EventoContenidoExtra.EdicionEvento_id)
+                @Html.HiddenFor(model => model.Modo)
+
+                <div class="row" style="margin-top:10px;">
+                    <div class="col-md-3">
+                        <label>Tipo Contenido</label>
+                        <select id="select-contenido" class="form-control input-sm" onchange="VaciarInputs()">
+                            <option value="">Selecciona</option>
+                            <option value="imagen">Imagen</option>
+                            <option value="video">Video</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9">
+
+                        <div id="typeVideo" class="hidden">
+
+                            <label>URL del video</label>
+                            @Html.EditorFor(model => model.EventoContenidoExtra.UrlVideo, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            <div class="validacionContenidoExtraForm"></div>
+                        </div>
+
+                        <div id="typeImg" class="hidden">
+
+                            <label>Imagen principal</label>
+                            <center>
+                                <div style="margin-top:10px;">
+                                    @if (!string.IsNullOrEmpty(Model.EventoContenidoExtra.ArchivoImagen) && BackendPortal.Controllers.BaseController.ExisteUrl(rutaImg))
+                                    {
+                                        <img id="imgPicture" src="@{@rutaImg}" class="imgFoto" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imgPicture" src="~/Images/imgNoDisp.png" title="Imagen no disponible" class="imgFoto" />
+                                    }
+                                </div>
+                            </center>
+                            <div class="row" style="margin-top:10px;">
+                                <div class="col-md-9">
+                                    <div class="input-group">
+                                        @Html.EditorFor(model => model.EventoContenidoExtra.NombreArchivoImagen, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", @readonly = "readonly" } })
+                                        <span class="input-group-btn">
+                                            <span class="btn btn-default btn-file btn-sm">
+                                                Buscar…
+                                                @Html.TextBoxFor(model => model.EventoContenidoExtra.PictureUpload, new { type = "file", @class = "nodisplay", onchange = "SetNameFile('EventoContenidoExtra_PictureUpload');readURL(this, 'imgPicture');" })
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div id="divFormatoIncorrecto" class="hidden" style="margin-top:10px;">
+                                        <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                    </div>
+                                    @Html.ValidationMessageFor(model => model.EventoContenidoExtra.NombreArchivoImagen)
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="button" class="btn btn-sm btn-default" onclick="VaciarInputs();">Limpiar</button>
+                                </div>
+                            </div>
+
+                            <div class="validacionContenidoExtraForm"></div>
+
+                        </div>
+
+                    </div>
+
+                    
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-12" style="text-align: end; padding: 3%">
+                        <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <div id="cargaContenidoExtra">
+
+
+
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        </div>
+        <div id="loading-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(245, 245, 245, 0.5); z-index: 9999; display: none">
+            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <i style="font-size: 2em" class='glyphicon glyphicon-repeat fa-spin'></i>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/datepicker")
+
+@Styles.Render("~/Content/datepicker")
+
+@Scripts.Render("~/bundles/Selectize")
+@Styles.Render("~/Content/Selectize")
+
+@Scripts.Render("~/Scripts/combos.js")
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#select-contenido").on("change", function () {
+            CambiarImageVideo($(this).val())
+        })
+        ;
+        CargarTablaContenidoExtra($("#EventoContenidoExtra_EdicionEvento_id").val())
+
+    })
+
+
+</script>

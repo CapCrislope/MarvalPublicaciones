@@ -1,0 +1,187 @@
+﻿@model BackendPortal.Models.VM.NovedadVM
+
+@{
+    string identif = "Modal";
+    string rutaImg = @System.Configuration.ConfigurationManager.AppSettings["DIR_REPOSITORIO_URL"] + @"Novedades\" + Model.novedad.imagen;
+}
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <form id="NovedadForm" onsubmit="GuardarNovedad(); return false;" enctype="multipart/form-data">
+            @Html.HiddenFor(model => model.modo)
+            @Html.HiddenFor(model => model.titulo)
+            @Html.HiddenFor(model => model.novedad.featured)
+            @Html.HiddenFor(model => model.novedad.id)
+            @Html.HiddenFor(model => model.novedad.AreasPracticas, new { id = "hAreasPracticas" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.novedad.Profesionales, new { id = "hProfesionales" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.novedad.kind_id, new { id = "hkind_id" + identif, @class = "IncludeHidden" })
+            @Html.HiddenFor(model => model.novedad.ImagenEsVertical, new { id = "himgPictureVertical", @class = "IncludeHidden" })
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@Model.titulo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="contenedorFoto">
+                                <label>Im&aacute;gen</label>
+                                <center>
+                                    <div style="margin-top:10px;">
+                                        @if (!string.IsNullOrEmpty(Model.novedad.imagen) && BackendPortal.Controllers.BaseController.ExisteUrl(rutaImg))
+                                        {
+                                            <img id="imgPicture" src="@{@rutaImg}" class="imgFoto" />
+                                        }
+                                        else
+                                        {
+                                            <img id="imgPicture" src="~/Images/imgNoDisp.png" class="imgFoto" />
+                                         }
+                                    </div>
+                                </center>
+                                <div class="row" style="margin-top:10px;">
+                                    <div class="col-md-9">
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.novedad.imagen, new { htmlAttributes = new { @class = "form-control input-sm ta-coment", id = "filenameImagen", name = "", @readonly = "readonly" } })
+                                            <span class="input-group-btn">
+                                                <span class="btn btn-default btn-file btn-sm">
+                                                    Buscar…
+                                                    @Html.TextBoxFor(model => model.novedad.ImagenUpload, new { type = "file", id = "inputFileImagen", name = "", @class = "nodisplay", onchange = "SetNameFile('inputFileImagen'); readURL(this, 'imgPicture');" })
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div id="divFormatoFotoIncorrecto" class="hidden" style="margin-top:10px;">
+                                            <span class="field-validation-error">Formato de archivo incorrecto.</span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.novedad.imagen)
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn btn-sm btn-default" onclick="BorrarImagenNovedad();">Limpiar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                @Html.HiddenFor(model => model.novedad.ImagenPosY, new { id = "hImagenPosY" + identif, @class = "IncludeHidden" })
+                              @*  <input type="hidden" id="hImagenPosY@{@identif}" name="ImagenPosY" />*@
+                                <div class="form-group">
+                                    <label for="ddlImagenPosY@{@identif}">Posicion imagen</label>
+                                    <div id="pnlImagenPosY@{@identif}"></div>
+                                </div>
+                            </div>
+
+                           <div>
+                                <label>Fecha</label>
+                                <div class="input-group date">
+                                    @Html.EditorFor(model => model.novedad.date, new { htmlAttributes = new { @class = "form-control input-sm", @readonly = "readonly" } })
+                                    <div class="input-group-addon input-sm dtp-sm">
+                                        <span id="datepicker" class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.novedad.date)
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Áreas de Práctica *</label>
+                                <div id="pnlAreasPracticas@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                                @Html.ValidationMessageFor(model => model.novedad.AreasPracticas)
+                            </div>
+                            <div style="margin-top:20px;">
+                                <label>Profesionales</label>
+                                <div id="pnlProfesionales@{@identif}">
+                                    <img src="~/Images/loading.gif" />
+                                </div>
+                          </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:25px;">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (es) *</label>
+                            @Html.EditorFor(model => model.novedad.title_es, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.novedad.title_es)
+                        </div>
+                        <div class="col-md-4">
+                            <label>Tipo *</label>
+                            <div id="pnlkind_id@{@identif}">
+                                <img src="~/Images/loading.gif" />
+                            </div>
+                            @Html.ValidationMessageFor(model => model.novedad.kind_id)
+                        </div>
+                        <div class="col-md-4" style="margin-top: 23px;">
+                            <label>Destacado (HOME)</label>
+                            @if (Model.novedad.featured == 1)
+                            {
+                                <input type="checkbox" id="Destacado" checked="checked" />
+                            }
+                            else
+                            {
+                                <input type="checkbox" id="Destacado" />
+                            }
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Copete (es)</label>
+                            @Html.TextAreaFor(model => model.novedad.header_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Detalle (es)</label>
+                            @Html.TextAreaFor(model => model.novedad.detail_es, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-4">
+                            <label>Título (en) *</label>
+                            @Html.EditorFor(model => model.novedad.title_en, new { htmlAttributes = new { @class = "form-control input-sm" } })
+                            @Html.ValidationMessageFor(model => model.novedad.title_en)
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Copete (en)</label>
+                            @Html.TextAreaFor(model => model.novedad.header_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px;">
+                        <div class="col-md-12">
+                            <label>Detalle (en)</label>
+                            @Html.TextAreaFor(model => model.novedad.detail_en, new { @class = "ckeditor form-control wmax input-sm", @Style = "height: 250px" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<div id="AlertsModal">
+</div>
+<div id="AlertsCombo">
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+<script>
+    $(document).ready(function () {
+        InicializarCKEDITOR("novedad_header_en");
+        InicializarCKEDITOR("novedad_detail_en");
+        InicializarCKEDITOR("novedad_header_es");
+        InicializarCKEDITOR("novedad_detail_es");
+        InicializarDatePickers();
+    });
+</script>

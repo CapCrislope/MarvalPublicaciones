@@ -1,0 +1,85 @@
+﻿
+@model DistribucionUtilidades.Models.DTO.InformacionMarvalDTO
+
+
+@{ string identif = "_ModalInfoCuentaMarval";}
+
+<div id="Alerts_ModalInfoCuentaMarval"></div>
+
+<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Información de Marval</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form id="FormInfoCuentaMarval" onsubmit="guardarInfoCuentaMarval(); return false;">
+            @Html.HiddenFor(model => model.Modo)
+            @Html.HiddenFor(model => model.IdInfoCuentaMarval)
+            @Html.HiddenFor(model => model.IdTipoCuenta, new { id = "hIdTipoCuenta" + identif, @class = "IncludeHidden" })
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label>Nro convenio G -> G</label>
+                        @Html.EditorFor(model => Model.NroConvenioGG, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0"} })
+                        @Html.ValidationMessageFor(model => Model.NroConvenioGG)
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            <label>Nro convenio G -> O</label>
+                            @Html.EditorFor(model => Model.NroConvenioGO, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0"} })
+                            @Html.ValidationMessageFor(model => Model.NroConvenioGO)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            <label>CUIT</label>
+                            @Html.EditorFor(model => Model.Cuit, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0"} })
+                            @Html.ValidationMessageFor(model => Model.Cuit)
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group-sm col-md-4">
+                        <label for="ddIdTipoCuenta@{@identif}">Tipo de Cuenta</label>
+                        <div id="pnlIdTipoCuenta@{@identif}">
+                            @*<img src="~/Images/loading.gif" />*@
+                        </div>
+                        @Html.ValidationMessageFor(model => model.IdTipoCuenta)
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            <label>Nro de Cuenta</label>
+                            @Html.EditorFor(model => Model.NroCuenta, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0"} })
+                            @Html.ValidationMessageFor(model => Model.NroCuenta)
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div>
+                            <label>Código concepto</label>
+                            @Html.EditorFor(model => Model.CodigoConcepto, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0", } })
+                            @Html.ValidationMessageFor(model => Model.CodigoConcepto)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer mt-3">
+                <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<partial name="_ValidationScriptsPartial" />
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+     comboTipoCuenta('@(identif)',null,null)
+     
+    })
+
+</script>

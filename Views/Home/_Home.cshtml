@@ -1,0 +1,58 @@
+﻿<div class="row">
+    <div class="col-md-12">
+        @*<div class="body-content">*@
+            @if (ViewBag.Login == 0)
+            {
+                <div class="contenedor col-centered">
+                    <div class="cuadro contenido">Usted no tiene usuario para acceder a la intranet. Por favor consulte a un administrador.</div>
+                </div>
+            }
+            else
+            {
+                <div class="pnlPrincipal row">
+                    <div class="col-md-12">
+                        <div style="margin-bottom: 20px" class="row">
+                            <div class="col-md-12">
+                                <!-- TÍTULO -->
+                                <h1 class="display-4 portada">Distribución de Utilidades</h1>
+                            </div>
+                        </div>
+                        <div class="row" id="divBanners" style="display: none">
+                            <div class="col-12">
+                                <div id="pnlBanners" style="margin-bottom: 30px;">
+                                    @*<div class="alert alert-dismissible banner bannerYellow">
+                                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                        <img src="~/Images/lamp.png" class="imgLamp" />
+                                        <div style="padding-left: 50px;">
+                                            <strong>Prueba Prueba</strong>
+                                        </div>
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div id="menuPnl">
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CONTENIDO -->
+                        <div id="pnlContenido" style="width:100%; margin-top: 20px;">
+
+                        </div>
+                    </div>
+                </div>
+            }
+        @*</div>*@
+    </div>
+</div>
+
+<div id="AlertsHome"></div>
+<script>
+    $(document).ready(function () {
+        CargarMenu();
+        //CargarPortada();
+    })
+</script>

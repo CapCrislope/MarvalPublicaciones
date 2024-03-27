@@ -1,0 +1,32 @@
+﻿@model DistribucionUtilidades.Models.VM.LogInVM
+
+<div class="modal-dialog modal-dialog-centered modal-md" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Firmar conforme</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form id="FrmFirmarRecibo" onsubmit="FirmarConforme(); return false;">
+            @Html.HiddenFor(model => model.LogInDTO.IdImportePagoSocios)
+            <div class="row" style="padding-block:20px 10px; padding-inline: 20px;">
+                <div class="col-12">
+                    <label>Contraseña</label>
+                    @Html.TextBoxFor(model => model.LogInDTO.Password, new { type = "password", @class="form-control" })
+                    @Html.ValidationMessageFor(model => model.LogInDTO.Password)
+                    <div id="divCredencialesIncorrectas" class="d-none" style="margin-top:10px;">
+                        <span class="field-validation-error">Contraseña incorrecta.</span>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="modal-footer mt-3">
+                <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                <button type="button" class="btn btn-light btn-sm" data-dismiss="modal">Cerrar</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial"/>

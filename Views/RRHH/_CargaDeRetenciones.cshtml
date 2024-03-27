@@ -1,0 +1,178 @@
+﻿
+@model DistribucionUtilidades.Models.VM.CargaDeRetencionesVM
+
+@{ string identif = "_CargaDeRetenciones";
+
+    string moneda = "";
+    if (Model.enPesos == true)
+    {
+        moneda = "$ ";
+    }
+    else {
+        moneda = "U$D ";
+    }
+}
+
+
+<div id="Alerts_CargaDeRetenciones"></div>
+
+
+<div class="row mb-3">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div>
+            @{
+                if (ViewBag.TipoProceso == 1)
+                {
+                    <h3>Carga de Retenciones (Proceso Real)</h3>
+                }
+                else
+                {
+                    <h3 style="color:#ff6a00">Carga de Retenciones  (Proceso Provisorio)</h3>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div class="row mb-2">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <p class="leyenda">
+            Las retenciones se han calculado automáticamente a partir de la siguiente fórmula:
+        </p>
+        <p class="leyenda">
+            Retención = (importe bruto a distribuir – mínimo no imponible) x IIGG, en donde:<br />
+            -	Mínimo no imponible = $7870<br />
+            -	IIGG = 6%
+        </p>
+        <p class="leyenda">
+            Recuerde que:<br />
+            -	Si la distribución es en dólares americanos, el valor obtenido a partir del cálculo se convertirá utilizando el TC comprador, ingresado en la distribución.<br />
+            -	El mínimo no imponible solo se resta en la primera iteración del mes. Es decir que, si hay más de una iteración en el mes, se calcula la retención, pero no se considera el mínimo imponible.
+        </p>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div>
+            <div>
+                <strong>Mes de Distribución: </strong> @Model.MesIteracion
+                <br /><strong>Importe Bruto: </strong> $ @Model.MontoDistribucion.ToString("N0")
+                <br /><strong>Nro de iteración: </strong> @Model.NroIteracion
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+
+@{
+    if (Model.Modo == "EDICION")
+    {
+        <div class="row mb-4">
+            <div class="col-md-2"></div>
+            <div class="form-group-sm col-md-8" style="color: #db2121; font-size: 16px;">
+                <label>Nota de Revisión</label>
+                @{if (Model.NotaRevision != "" && Model.NotaRevision != null)
+                    {
+                        <div>@Model.NotaRevision</div>
+                    }
+                    else
+                    {
+                        <div>-</div>
+                    }
+
+
+                }
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    }
+}
+
+
+@Html.HiddenFor(m => m.Modo)
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <table id="RetencionesTable" class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th width="50%" scope="col">ExSocio</th>
+                    <th width="30%" scope="col">Importe Bruto</th>
+                    <th width="20%" scope="col">Retenciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    if (Model.ExSocios.Count > 0)
+                    {
+                        for (int i = 0; i < Model.ExSocios.Count; i++)
+                        {
+
+                            <tr id="@Model.ExSocios[i].IdPersona" data-type="ExSocio" data-row="@i">
+                                <td>@Model.ExSocios[i].ExSocio</td>
+                                <td>@(moneda + Model.ExSocios[i].Importe.ToString("N0"))</td>
+                                <td>
+                                    <div>
+                                        @Html.EditorFor(model => Model.ExSocios[i].Retenciones, new { htmlAttributes = new { @class = "form-control form-control-sm", onChange = "SumImportes(this)", @type = "number", @min = "0", @Id = "Importe_" + Model.ExSocios[i].IdPersona + "", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = moneda, @data_politespace_reverse = "" } })
+                                        @Html.ValidationMessageFor(model => Model.ExSocios[i].Retenciones)
+                                    </div>
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+
+                <tr id="totalExSocios" class="table-info">
+                    <td>Total</td>
+                    <td>@( moneda + Model.TotalImportesExSocios.ToString("N0") )</td>
+                    <td>
+                        <div id="TotalExSocios">
+                            @( moneda + Model.TotalExSocios.ToString("N0") )
+                        </div>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div class="col-md-2"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div>
+            <button type="button" class="btn btn-primary btn-sm mx-auto d-block pl-3 pr-3 mt-5" onclick="GuardarRetenciones()">Guardar</button>
+        </div>
+    </div>
+</div>
+
+
+<partial name="_ValidationScriptsPartial" />
+<environment include="Development">
+    <script src="~/js/CargaDeRetenciones.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/CargaDeRetenciones.min.js" asp-append-version="true"></script>
+</environment>
+
+
+<script type="text/javascript">
+    var moneda = "@moneda";
+    $(document).ready(function () {
+        $("input[type=number]").politespace();
+
+    })
+
+</script>

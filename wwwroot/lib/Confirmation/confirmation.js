@@ -9,14 +9,14 @@
 })(this, function (a) {
     "use strict";
     function l(t, e) {
-        debugger;
+        ;
         for (var n = 0; n < e.length; n++) {
             var o = e[n];
             (o.enumerable = o.enumerable || !1), (o.configurable = !0), "value" in o && (o.writable = !0), Object.defineProperty(t, o.key, o);
         }
     }
     function t(i) {
-        debugger;
+        ;
         for (var t = 1; t < arguments.length; t++) {
             var r = null != arguments[t] ? arguments[t] : {},
                 e = Object.keys(r);
@@ -250,7 +250,7 @@
                             }));
                 }),
                 (c._setStandardButtons = function (t) {
-                    debugger;
+                    ;
                     var e = this,
                         n = t.find(__).addClass(this.config.btnOkClass).html(this.config.btnOkLabel).attr(this.config._attributes);
                     (this.config.btnOkIconClass || this.config.btnOkIconContent) &&
@@ -339,7 +339,7 @@
                 s
             );
         })(e);
-    debugger;
+    ;
     (a.fn[u] = o._jQueryInterface),
         (a.fn[u].Constructor = o),
         (a.fn[u].noConflict = function () {

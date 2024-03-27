@@ -1,0 +1,303 @@
+﻿
+@model DistribucionUtilidades.Models.VM.ValidacionDistribucionIteracionVM
+@using System.Globalization;
+
+@{ }
+
+
+<div id="Alerts_ValidacionDistribucion"></div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        @{
+            if (ViewBag.TipoProceso == 1)
+            {
+                <h3>Revisión y Validación de Distribución (Proceso Real)</h3>
+            }
+            else
+            {
+                <h3 style="color:#ff6a00">Revisión y Validación de Distribución (Proceso Provisorio)</h3>
+            }
+        }
+    </div>
+</div>
+
+<div class="row mb-2">
+    <div class="col-md-12">
+        <p class="leyenda">
+            Revise y valide los valores del cuadro. Al aprobar la información, el sistema la guardará y le enviará un mail al usuario de RRHH para que ingrese la fecha de pago.<br />
+            En caso de encontrar algún error en los gastos de viajes y/o retenciones cargadas, por favor, seleccione el botón “Rechazar gastos/retenciones”.
+        </p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div>
+            <div>
+                <strong>Mes de Distribución: </strong> @ViewBag.MesIteracion  
+                <br /><strong>Importe Bruto: </strong> @ViewBag.MontoDistribucion    
+                <br /><strong>Nro de iteración: </strong> @ViewBag.NroIteracion   
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <table id="ImportesIteracionTable" class="table">
+                <thead class="thead-dark">
+                    <tr>
+                        @{
+                            if (Model.enPesos)
+                            {
+                                <th width="36%" scope="col">Socio/Ex-Socio</th>
+                                <th width="10%" scope="col">%<br />Distribución<br />Parcial</th>
+                                <th width="15%" scope="col">Distribución<br />Parcial</th>
+                                <th width="12%" scope="col">Gastos<br />de Viajes</th>
+                                <th width="12%" scope="col">Retenciones</th>
+                                <th width="15%" scope="col">Importe<br />Final</th>
+                            }
+                            else
+                            {
+                                <th width="40%" scope="col">Socio/Ex-Socio</th>
+                                <th width="15%" scope="col">%<br />Distribución<br />Parcial</th>
+                                <th width="15%" scope="col">Distribución<br />Parcial</th>
+                                <th width="15%" scope="col">Retenciones</th>
+                                <th width="15%" scope="col">Importe<br />Final</th>
+                            }
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        @if (Model.Socios.Count > 0)
+                        {
+                            @for (int i = 0; i < Model.Socios.Count; i++)
+                            {
+
+                            <tr id="@Model.Socios[i].PersonaId" data-type="Socio" data-row="@i">
+                                <td>@Model.Socios[i].Socio</td>
+                                <td>
+                                    <div id="Porcentaje_@Model.Socios[i].PersonaId">
+                                        @Model.Socios[i].Porcentaje.ToString("P4")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="DistribucionParcial_@Model.Socios[i].PersonaId">
+                                        @( Model.enPesos == true ? "$ " + Model.Socios[i].ImportePesos.ToString("N0") : "U$D " + Model.Socios[i].ImporteDolares.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                @if (Model.enPesos)
+                                {
+                                    <td>
+                                        <div id="Gastos_@Model.Socios[i].PersonaId">
+                                            $ @Model.Socios[i].GastosViajesPesos.ToString("N0")
+                                        </div>
+                                    </td>
+                                }
+                                
+                                <td>
+                                    <div id="Retenciones_@Model.Socios[i].PersonaId">
+                                        @( Model.enPesos == true ? "$ " + Model.Socios[i].RetencionesPesos.ToString("N0") : "U$D " + Model.Socios[i].RetencionesDolares.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="Final_@Model.Socios[i].PersonaId">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.Socios[i].ImporteFinal.ToString("N0") )
+                                    </div>
+                                </td>
+
+                            </tr>
+                            }  
+
+                            <tr id="totalSocios" class="bg-total">
+                                <td>Total socios</td>
+                                <td>
+                                    <div id="Importe_TotalSociosPorcentaje">
+                                        @Model.TotalSociosPorcentaje.ToString("P4")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="Importe_TotalSociosParcial">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalSociosParcial.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                @if (Model.enPesos){
+                                    <td>
+                                        <div id="Importe_TotalSociosGastos">
+                                            $ @Model.TotalSociosGastos.ToString("N0")
+                                        </div>
+                                    </td>
+                                }
+
+                                <td>
+                                    <div id="Importe_TotalSociosRetenciones">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalSociosRetenciones.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="Importe_TotalSociosFinal">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalSociosFinal.ToString("N0") )
+                                    </div>
+                                </td>
+                            </tr>
+                            //--------------------------------------------------------------------------------
+                            if (Model.ExSocios.Count > 0)
+                            {
+
+                                for (int i = 0; i < Model.ExSocios.Count; i++)
+                                {
+
+                                <tr id="@Model.ExSocios[i].PersonaId" data-type="ExSocio" data-row="@i">
+                                    <td>@Model.ExSocios[i].Socio</td>
+                                    <td>
+                                        <div id="Porcentaje_@Model.ExSocios[i].PersonaId">
+                                            @Model.ExSocios[i].Porcentaje.ToString("P4")
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="DistribucionParcial_@Model.ExSocios[i].PersonaId">
+                                            @( Model.enPesos == true ? "$ " + Model.ExSocios[i].ImportePesos.ToString("N0") : "U$D " + Model.ExSocios[i].ImporteDolares.ToString("N0") )
+                                        </div>
+                                    </td>
+
+                                    @if (Model.enPesos)
+                                    {
+                                    <td>
+                                        <div id="Gastos_@Model.ExSocios[i].PersonaId">
+                                            $ @Model.ExSocios[i].GastosViajesPesos.ToString("N0")
+                                        </div>
+                                    </td>
+                                    }
+
+                                    <td>
+                                        <div id="Retenciones_@Model.ExSocios[i].PersonaId">
+                                            @( Model.enPesos == true ? "$ " + Model.ExSocios[i].RetencionesPesos.ToString("N0") : "U$D " + Model.ExSocios[i].RetencionesDolares.ToString("N0") )
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div id="Final_@Model.ExSocios[i].PersonaId">
+                                            @( (Model.enPesos == true ? "$ " : "U$D ") + Model.ExSocios[i].ImporteFinal.ToString("N0") )
+                                        </div>
+                                    </td>
+
+                                </tr>
+                                }
+                            }
+                            <tr id="totalExSocios" class="bg-total">
+                                <td>Total ExSocios</td>
+                                <td>
+                                    <div id="Importe_TotalExSociosPorcentaje">
+                                        @Model.TotalExSociosPorcentaje.ToString("P4")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="Importe_TotalExSociosParcial">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalExSociosParcial.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                @if (Model.enPesos)
+                                {
+                                <td>
+                                    <div id="Importe_TotalExSociosGastos">
+                                        $ @Model.TotalExSociosGastos.ToString("N0")
+                                    </div>
+                                </td>
+                                }
+
+                                <td>
+                                    <div id="Importe_TotalExSociosRetenciones">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalExSociosRetenciones.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="Importe_TotalExSociosFinal">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalExSociosFinal.ToString("N0") )
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="bg-totalGeneral">
+                                <td>TOTAL</td>
+                                <td>
+                                    <div id="TotalGeneral_Porcentaje">
+                                        @Model.TotalGeneralPorcentaje.ToString("P4")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="TotalGeneral_Parcial">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalGeneralParcial.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                @if (Model.enPesos)
+                                {
+                                <td>
+                                    <div id="TotalGeneral_Gastos">
+                                        $ @Model.TotalGeneralGastos.ToString("N0")
+                                    </div>
+                                </td>
+                                }
+
+                                <td>
+                                    <div id="TotalGeneral_Retenciones">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalGeneralRetenciones.ToString("N0") )
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="TotalGeneral_Final">
+                                        @( (Model.enPesos == true ? "$ " : "U$D ") + Model.TotalGeneralFinal.ToString("N0") )
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-center">
+                <button type="button" class="btn btn-success btn-sm pl-3 pr-3 mt-5" onclick="AprobarDistribucion();">Aprobar</button>
+                <button type="button" class="btn btn-danger btn-sm pl-3 pr-3 mt-5" onclick="ModalRechazarDistribucion();">Rechazar</button>
+            </div>
+
+        </div>
+    </div>
+
+
+<partial name="_ValidationScriptsPartial" />
+
+<environment include="Development">
+    <script src="~/js/ValidacionDistribucion.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/ValidacionDistribucion.min.js" asp-append-version="true"></script>
+</environment>
+
+<script type="text/javascript">
+
+    var arrDatos = @Html.Raw(Json.Serialize(Model.ListaOriginal));
+
+    $(document).ready(function () {
+
+    })
+
+</script>

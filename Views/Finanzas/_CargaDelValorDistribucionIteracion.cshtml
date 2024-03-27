@@ -1,0 +1,343 @@
+﻿@model DistribucionUtilidades.Models.VM.CargaDeValorDistribucionIteracionVM
+
+
+@{ string identif = "_CargaDeValorDistribucionIteracion";
+}
+
+<div id="Alerts_CargaDeValorDistribucionIteracion"></div>
+
+<div class="row mb-3">
+    <div class="col-md-12">
+        @{
+            if (ViewBag.TipoProceso == 1)
+            {
+                <h3>Carga del valor a distribuir en iteración (Proceso Real)</h3>
+            }
+            else
+            {
+                <h3 style="color:#ff6a00">Carga del valor a distribuir en iteración  (Proceso Provisorio)</h3>
+            }
+        }
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <p class="leyenda">Por favor, seleccione la moneda (pesos o dólares americanos) en que se pagará la distribución e ingrese el importe total correspondiente a la distribución de los socios. </p>
+        <p class="leyenda">
+            Recuerde que:<br />
+            -	Al presionar el botón  “calcular”, el sistema calculará el importe de distribución correspondiente a cada socio y el apoyo financiero para cada exsocio. Además, si la distribución es en dólares americanos, realizará la conversión necesaria, utilizando el TC comprador.<br />
+            -	El sistema no permitirá ingresar un importe total a distribuir que sobrepase el valor restante.<br />
+            -	Se calculará automáticamente el importe del apoyo financiero a distribuir entre los exsocios de acuerdo con el porcentaje parcial anteriormente calculado.<br />
+            -	Tenga en cuenta que, al guardar los cambios, se le enviará un mail al socio administrador para que verifique los importes.
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-1"></div>
+
+    <div class="col-10">
+        @{ if (Model.Modo == "EDICION")
+            {
+                <div class="row mt-3 mb-4">
+                    <div class="form-group-sm col-md-12" style="color: #db2121; font-size: 16px;">
+                        <label>Nota de Revisión</label>
+                        @{if (Model.NotaRevision != "" && Model.NotaRevision != null)
+                            {
+                                <div>@Model.NotaRevision</div>
+                            }
+                            else
+                            {
+                                <div>-</div>
+                            }
+
+
+                        }
+
+                    </div>
+                </div>
+            }
+        }
+
+
+        <form id="DistribucionIteracionForm">
+            @Html.HiddenFor(m => m.Modo)
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Tipo de Distribución</label>
+                        <div>
+                            <label>@Html.RadioButtonFor(m => m.TipoDistribucionPesos, true, new { id = "tipo_Pesos", onclick = "disableInput(this)" }) Pesos</label>
+                            <label> @Html.RadioButtonFor(m => m.TipoDistribucionPesos, false, new { id = "tipo_Dolar", onclick = "disableInput(this)" }) Dolares</label>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Tipo de cambio</label>
+                        @Html.EditorFor(m => m.TipoCambio, new { htmlAttributes = new { @class = "form-control form-control-sm", @readonly = "readonly", @disabled = "disabled" } })
+
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Importe total en $ a Distribuir a Socios en el Mes:</label>
+                    <div>
+                        @Html.EditorFor(m => m.ImporteDistribucionSociosPesos, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @min = "0", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = "$ ", @data_politespace_reverse = "" } })
+                        @Html.ValidationMessageFor(model => Model.ImporteDistribucionSociosPesos)
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label>Importe total en U$D a Distribuir a Socios en el Mes:</label>
+                    <div>
+                        @Html.EditorFor(m => m.ImporteDistribucionSociosDolares, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled", @type = "number", @min = "0", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = "U$D ", @data_politespace_reverse = "" } })
+                        @Html.ValidationMessageFor(model => Model.ImporteDistribucionSociosDolares)
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary btn-sm pl-3 pr-3" style="margin-top:29px;" onclick="calcular()">Calcular </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div id="MontoRestante" data-val="@Model.Restante">
+                        <label style="color: #db2121; font-size: 16px;">Restante: $ @Model.Restante.ToString("N0")</label>
+                    </div>
+                </div>
+                <div class="col-md-9"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div>
+                        <label>Importe total en $ a Distribuir a ExSocios en el Mes:</label>
+                        @Html.EditorFor(m => m.ImporteDistribucionExSociosPesos, new { htmlAttributes = new { @class = "form-control form-control-sm", @type = "number", @disabled = "disabled", @min = "0", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = "$ ", @data_politespace_reverse = "" } })
+
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <label>Importe total en U$D a Distribuir a ExSocios en el Mes:</label>
+                        @Html.EditorFor(m => m.ImporteDistribucionExSociosDolares, new { htmlAttributes = new { @class = "form-control form-control-sm", @disabled = "disabled", @type = "number", @min = "0", @pattern = "[0-9]*", @data_politespace = "", @data_politespace_prefix = "U$D ", @data_politespace_reverse = "" } })
+
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table id="CargaValorDistribucionIteracionTable" class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th width="20%" scope="col">Socio/Ex-Socio</th>
+                            <th width="30%">% Distribución Parcial</th>
+                            <th width="20%">Distribucion parcial en $</th>
+                            <th width="20%">Distribucion parcial en U$D</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            // Totales de los SOCIOS
+                            decimal TotalPorcentajeSocios = Model.Socios.Sum(item => item.Porcentaje);
+                            long TotalDistribucionPesosSocios = Model.Socios.Sum(item => item.ImportePesos);
+                            long TotalDistribucionDolaresSocios = Model.Socios.Sum(item => item.ImporteDolares);
+
+
+                            // Totales de los ExSocios
+                            decimal TotalPorcentajeExSocios = Model.ExSocios.Sum(item => item.Porcentaje);
+                            long TotalDistribucionPesosExSocios = Model.ExSocios.Sum(item => item.ImportePesos);
+                            long TotalDistribucionDolaresExSocios = Model.ExSocios.Sum(item => item.ImporteDolares);
+
+
+
+                            //----- Suma de los totales
+                            decimal SumaTotalPorcentaje = TotalPorcentajeSocios + TotalPorcentajeExSocios;
+                            long SumaTotalDistribucionesPesos = TotalDistribucionPesosSocios + TotalDistribucionPesosExSocios;
+                            long SumaTotalDistribucionesDolares = TotalDistribucionDolaresSocios + TotalDistribucionDolaresExSocios;
+
+
+
+                            if (Model.Socios.Count > 0)
+                            {
+                                for (int i = 0; i < Model.Socios.Count; i++)
+                                {
+
+
+                                    <tr id="@Model.Socios[i].IdPersona" data-type="Socio" data-row="@i">
+                                        <td>@Model.Socios[i].Socio</td>
+
+                                        <td>
+                                            <div id="DistribucionPorcentaje_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].Porcentaje">
+                                                @Model.Socios[i].Porcentaje.ToString("P4")
+
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div id="ImporteDistribucionTotalPesos_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].ImportePesos">
+                                                $ @Model.Socios[i].ImportePesos.ToString("N0")
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div id="ImporteDistribucionTotalDolares_@Model.Socios[i].IdPersona" data-val="@Model.Socios[i].ImporteDolares">
+                                                U$D @Model.Socios[i].ImporteDolares.ToString("N0")
+
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                            //----------------------totalSocios
+                            <tr id="totalSocios" class="bg-total">
+                                <td>Total Socios</td>
+                                <td>
+                                    <div id="TotalPorcentajeSocios" data-val="@TotalPorcentajeSocios">
+                                        @TotalPorcentajeSocios.ToString("P4")
+                                    </div>
+                                </td>
+                                <td>
+                                    <div id="TotalDistribucionPesosSocios" data-val="@TotalDistribucionPesosSocios">
+                                        $ @TotalDistribucionPesosSocios.ToString("N0")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="TotalDistribucionDolaresSocios" data-val="@TotalDistribucionDolaresSocios">
+                                        U$D @TotalDistribucionDolaresSocios.ToString("N0")
+                                    </div>
+                                </td>
+
+                            </tr>
+                            //--------------------------------------------------------------------------------
+                            if (Model.ExSocios.Count > 0)
+                            {
+
+                                for (int i = 0; i < Model.ExSocios.Count; i++)
+                                {
+
+                                    <tr id="@Model.ExSocios[i].IdPersona" data-type="ExSocio" data-row="@i">
+                                        <td>@Model.ExSocios[i].Socio</td>
+                                        <td>
+                                            <div id="DistribucionPorcentaje_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].Porcentaje">
+                                                @Model.ExSocios[i].Porcentaje.ToString("P4")
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div id="ImporteDistribucionTotalPesos_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].ImportePesos">
+                                                $ @Model.ExSocios[i].ImportePesos.ToString("N0")
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div id="ImporteDistribucionTotalDolares_@Model.ExSocios[i].IdPersona" data-val="@Model.ExSocios[i].ImporteDolares">
+                                                U$D @Model.ExSocios[i].ImporteDolares.ToString("N0")
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                }
+
+                                //---------------------total ExSocios
+                            }
+                            <tr id="totalExSocios" class="bg-total">
+                                <td>Total ExSocios</td>
+                                <td>
+                                    <div id="TotalPorcentajeExSocios" data-val="@TotalPorcentajeExSocios">
+                                        @TotalPorcentajeExSocios.ToString("P4")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="TotalDistribucionPesosExSocios" data-val="@TotalDistribucionPesosExSocios">
+                                        $ @TotalDistribucionPesosExSocios.ToString("N0")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="TotalDistribucionDolaresExSocios" data-val="@TotalDistribucionDolaresExSocios">
+                                        U$D @TotalDistribucionDolaresExSocios.ToString("N0")
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                            //------------------------------total final
+                            <tr class="bg-totalGeneral">
+                                <td>TOTAL</td>
+
+                                <td>
+                                    <div id="SumaTotalPorcentaje">
+                                        @SumaTotalPorcentaje.ToString("P0")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="SumaTotalDistribucionesPesos">
+                                        $ @SumaTotalDistribucionesPesos.ToString("N0")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div id="SumaTotalDistribucionesDolares">
+                                        U$D @SumaTotalDistribucionesDolares.ToString("N0")
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary btn-sm pl-3 pr-3 mt-5" onclick="guardarDistribucionIteracion()"> Guardar </button>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+
+        </div>
+    </div>
+    <div class="col-1"></div>
+</div>
+
+
+<partial name="_ValidationScriptsPartial" />
+<environment include="Development">
+    <script src="~/js/CargaDeValorDistribucionIteracion.js" asp-append-version="true"></script>
+</environment>
+<environment exclude="Development">
+    <script src="~/js/CargaDeValorDistribucionIteracion.min.js" asp-append-version="true"></script>
+</environment>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        if ('@Model.TipoDistribucionPesos' == 'False')
+            $("#ImporteDistribucionSociosDolares").prop("disabled", false);
+        $("input[type=number]").politespace();
+
+        if ('@Model.Modo' == "EDICION" && @Model.TipoDistribucionPesos== "False") {
+
+        }
+    })
+
+</script>
